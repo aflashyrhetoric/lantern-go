@@ -12,7 +12,7 @@ CREATE TABLE "people" (
   "first_name" text,
   "last_name" text,
   "career" text,
-  "mobile" int,
+  "mobile" text,
   "email" int,
   "address" int,
   "dob" timestamp

@@ -1,0 +1,20 @@
+# lantern-go
+
+## Dependencies
+
+- `brew install modd`
+
+## Dev Flow
+
+`modd` to run the main.go and run gin server
+
+## Migrations
+
+TODO: Use a Makefile or something LOL
+
+```
+export CONNECTION_STRING="-source file://db/migrations -database 'postgres://localhost:5432/lantern-go?sslmode=disable'"
+alias mu="migrate $CONNECTION_STRING up"
+alias md="migrate $CONNECTION_STRING down"
+alias mdd="migrate $CONNECTION_STRING drop -f"
+```
