@@ -1,22 +1,14 @@
-CREATE TYPE "relationshiptype" AS ENUM (
-  'spouse',
-  'significant_other',
-  'cousin',
-  'sibling',
-  'child',
-  'parent',
-  'enemy'
-);
 CREATE TABLE "people" (
   "id" int PRIMARY KEY,
   "first_name" text,
   "last_name" text,
   "career" text,
   "mobile" text,
-  "email" int,
-  "address" int,
+  "email" text,
+  "address" text,
   "dob" timestamp
 );
+
 CREATE TABLE "strengths" (
   "id" int,
   "person_id" int,
@@ -38,7 +30,7 @@ CREATE TABLE "events" (
 CREATE TABLE "relationship" (
   "person_one_id" int,
   "person_two_id" int,
-  "relationship_type" relationshiptype
+  "relationship_type" text
 );
 ALTER TABLE "strengths"
 ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");

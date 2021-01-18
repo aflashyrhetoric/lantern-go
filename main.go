@@ -1,7 +1,10 @@
 package main
 
 import (
-	"github.com/aflashyrhetoric/lantern-api/handlers/people"
+	"log"
+
+	"github.com/aflashyrhetoric/lantern-api/db"
+	"github.com/aflashyrhetoric/lantern-api/handlers/person"
 	"github.com/gin-gonic/gin"
 
 	_ "net/http"
@@ -9,12 +12,13 @@ import (
 
 func main() {
 	r := gin.Default()
-	r.GET("/pzng", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"message": "pong",
-		})
-	})
-	// r.GET("/someGet", getting)
-	r.GET("/ping", people.Hello)
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+
+	// Use the InitDB function to initialise the global variable.
+	err := db.Start("user=ko dbname=lantern-go sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	r.GET("/people", person.GetPeople)
+	r.Run() // listen and serve on localhost:8080
 }

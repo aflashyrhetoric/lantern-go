@@ -1,24 +1,24 @@
 Table people {
   id int [pk]
-  first_name string
-  last_name string
-  career string
-  mobile int
-  email int
-  address int
+  first_name text
+  last_name text
+  career text
+  mobile text 
+  email text
+  address text
   dob timestamp
 }
 
 Table strengths {
   id int 
   person_id int [ref: > people.id]
-  description string
+  description text
 }
 
 Table pressure_points {
   id int
   person_id int [ref: > people.id]
-  description string
+  description text
 }
 
 Table attendees {
@@ -29,28 +29,18 @@ Table attendees {
 Table notes {
   id int
   person_id int [ref: > people.id]
-  text string
+  text text
 }
 
 Table events {
   id int [pk]
-  event_description string
-  notes string
+  event_description text
+  notes text
   date timestamp
-}
-
-Enum RelationshipType {
-  spouse
-  significant_other
-  cousin
-  sibling
-  child
-  parent
-  enemy
 }
 
 Table relationship {
   person_one_id int [ref: > people.id]
   person_two_id int [ref: > people.id]
-  relationship_type RelationshipType
+  relationship_type text
 }
