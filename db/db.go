@@ -9,7 +9,7 @@ import (
 // This time the global variable is unexported.
 var db *sqlx.DB
 
-// InitDB sets up setting up the connection pool global variable.
+// Start ... sets up setting up the connection pool global variable.
 func Start(dataSourceName string) error {
 	var err error
 
