@@ -2,8 +2,6 @@ package db
 
 import (
 	"time"
-
-	"github.com/davecgh/go-spew/spew"
 )
 
 type Person struct {
@@ -20,8 +18,6 @@ type Person struct {
 func GetAllPeople() ([]*Person, error) {
 	people := []*Person{}
 	db.Select(&people, "SELECT * FROM people")
-
-	spew.Dump(people)
 
 	return people, nil
 }
