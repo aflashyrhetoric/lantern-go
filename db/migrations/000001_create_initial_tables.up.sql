@@ -1,5 +1,5 @@
 CREATE TABLE "people" (
-  "id" int PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "first_name" text,
   "last_name" text,
   "career" text,
@@ -10,39 +10,52 @@ CREATE TABLE "people" (
 );
 
 CREATE TABLE "strengths" (
-  "id" int,
+  "id" SERIAL PRIMARY KEY,
   "person_id" int,
-  "description"text 
+  "description" text
 );
+
 CREATE TABLE "pressure_points" (
-  "id" int,
+  "id" SERIAL PRIMARY KEY,
   "person_id" int,
-  "description"text 
+  "description" text
 );
-CREATE TABLE "attendees" ("attendee_id" int, "event_id" int);
-CREATE TABLE "notes" ("id" int, "person_id" int, "text" text);
+
+CREATE TABLE "attendees" (
+  "attendee_id" int,
+  "event_id" int
+);
+
+CREATE TABLE "notes" (
+  "id" SERIAL PRIMARY KEY,
+  "person_id" int,
+  "text" text
+);
+
 CREATE TABLE "events" (
-  "id" int PRIMARY KEY,
+  "id" SERIAL PRIMARY KEY,
   "event_description" text,
   "notes" text,
   "date" timestamp
 );
+
 CREATE TABLE "relationship" (
+  "id" SERIAL PRIMARY KEY,
   "person_one_id" int,
   "person_two_id" int,
   "relationship_type" text
 );
-ALTER TABLE "strengths"
-ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
-ALTER TABLE "pressure_points"
-ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
-ALTER TABLE "attendees"
-ADD FOREIGN KEY ("attendee_id") REFERENCES "people" ("id");
-ALTER TABLE "attendees"
-ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
-ALTER TABLE "notes"
-ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
-ALTER TABLE "relationship"
-ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
-ALTER TABLE "relationship"
-ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");
+
+ALTER TABLE "strengths" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
+
+ALTER TABLE "pressure_points" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
+
+ALTER TABLE "attendees" ADD FOREIGN KEY ("attendee_id") REFERENCES "people" ("id");
+
+ALTER TABLE "attendees" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+
+ALTER TABLE "notes" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
+
+ALTER TABLE "relationship" ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
+
+ALTER TABLE "relationship" ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");

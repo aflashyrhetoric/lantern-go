@@ -21,7 +21,8 @@ func GetPeople(c *gin.Context) {
 }
 
 func CreatePerson(c *gin.Context) {
-	birthday, err := time.Parse(c.PostForm("dob"), "6/19/1993")
+	birthday, err := time.Parse(time.RFC3339, c.PostForm("dob"))
+
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

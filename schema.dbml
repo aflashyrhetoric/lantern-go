@@ -1,5 +1,5 @@
 Table people {
-  id int [pk]
+  id int [pk, increment]
   first_name text
   last_name text
   career text
@@ -10,13 +10,13 @@ Table people {
 }
 
 Table strengths {
-  id int 
+  id int [pk, increment]
   person_id int [ref: > people.id]
   description text
 }
 
 Table pressure_points {
-  id int
+  id int [pk, increment]
   person_id int [ref: > people.id]
   description text
 }
@@ -27,19 +27,20 @@ Table attendees {
 }
 
 Table notes {
-  id int
+  id int [pk, increment]
   person_id int [ref: > people.id]
   text text
 }
 
 Table events {
-  id int [pk]
+  id int [pk, increment]
   event_description text
   notes text
   date timestamp
 }
 
 Table relationship {
+  id int [pk, increment]
   person_one_id int [ref: > people.id]
   person_two_id int [ref: > people.id]
   relationship_type text
