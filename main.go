@@ -3,8 +3,8 @@ package main
 import (
 	"log"
 
-	"github.com/aflashyrhetoric/lantern-api/db"
-	"github.com/aflashyrhetoric/lantern-api/handlers/person"
+	"github.com/aflashyrhetoric/lantern-go/db"
+	"github.com/aflashyrhetoric/lantern-go/handlers/person"
 	"github.com/gin-gonic/gin"
 
 	_ "net/http"
@@ -20,5 +20,6 @@ func main() {
 	}
 
 	r.GET("/people", person.GetPeople)
+	r.POST("/people", person.CreatePerson)
 	r.Run() // listen and serve on localhost:8080
 }

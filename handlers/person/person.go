@@ -2,8 +2,9 @@ package person
 
 import (
 	"net/http"
+	"time"
 
-	"github.com/aflashyrhetoric/lantern-api/db"
+	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,5 +17,31 @@ func GetPeople(c *gin.Context) {
 
 	c.JSON(200, gin.H{
 		"data": people,
+	})
+}
+
+func CreatePerson(c *gin.Context) {
+	birthday, err := time.Parse(c.PostForm("dob"), "6/19/1993")
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	person := db.Person{
+		FirstName: c.PostForm("first_name"),
+		LastName:  c.PostForm("last_name"),
+		Career:    c.PostForm("career"),
+		Mobile:    c.PostForm("mobile"),
+		Email:     c.PostForm("email"),
+		Address:   c.PostForm("address"),
+		DOB:       birthday,
+	}
+
+	err = db.CreatePerson(person)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	c.JSON(200, gin.H{
+		"data": person,
 	})
 }
