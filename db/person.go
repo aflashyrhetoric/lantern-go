@@ -7,14 +7,14 @@ import (
 )
 
 type Person struct {
-	ID        int       `db:"id"`
-	FirstName string    `db:"first_name"`
-	LastName  string    `db:"last_name"`
-	Career    string    `db:"career"`
-	Mobile    string    `db:"mobile"`
-	Email     string    `db:"email"`
-	Address   string    `db:"address"`
-	DOB       time.Time `db:"dob"`
+	ID        int       `db:"id, omitempty"`
+	FirstName string    `db:"first_name, omitempty"`
+	LastName  string    `db:"last_name, omitempty"`
+	Career    string    `db:"career, omitempty"`
+	Mobile    string    `db:"mobile, omitempty"`
+	Email     string    `db:"email, omitempty"`
+	Address   string    `db:"address, omitempty"`
+	DOB       time.Time `db:"dob, omitempty"`
 }
 
 func GetAllPeople() ([]*Person, error) {
@@ -31,6 +31,26 @@ func GetAllPeople() ([]*Person, error) {
 func CreatePerson(p Person) error {
 	spew.Dump(conn)
 	_, err := conn.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob)", &p)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+
+func UpdatePerson(id int, p Person) error {
+
+	_, err := conn.NamedExec(`
+			UPDATE people 
+			SET 
+				first_name=:first_name,
+				last_name=:last_name,
+				career=:career,
+				mobile=:mobile,
+				email=:email,
+				address=:address,
+				dob=:dob,
+			`, &p)
 	if err != nil {
 		return err
 	}

@@ -2,6 +2,7 @@ package person
 
 import (
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
@@ -38,6 +39,40 @@ func CreatePerson(c *gin.Context) {
 	}
 
 	err = db.CreatePerson(person)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	c.JSON(200, gin.H{
+		"data": person,
+	})
+}
+
+func UpdatePerson(c *gin.Context) {
+	birthday, err := time.Parse(time.RFC3339, c.PostForm("dob"))
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	person := db.Person{
+		FirstName: c.PostForm("first_name"),
+		LastName:  c.PostForm("last_name"),
+		Career:    c.PostForm("career"),
+		Mobile:    c.PostForm("mobile"),
+		Email:     c.PostForm("email"),
+		Address:   c.PostForm("address"),
+		DOB:       birthday,
+	}
+
+	personID := c.Query("id")
+	id, err := strconv.Atoi(personID)
+
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	err = db.UpdatePerson(id, person)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
