@@ -26,7 +26,7 @@ func TestSeedPeople(t *testing.T) {
 		log.Fatal(err)
 	}
 
-	limit := 894
+	limit := 40
 
 	for i := 0; i < limit; i++ {
 
