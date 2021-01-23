@@ -43,7 +43,7 @@ func TestSeedPeople(t *testing.T) {
 		if err != nil {
 			panic(err)
 		}
-		a.DOB = birthday
+		a.DOB = &birthday
 
 		if err != nil {
 			panic(err)

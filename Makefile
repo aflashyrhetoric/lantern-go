@@ -1,4 +1,7 @@
-.PHONY: up down seed
+.PHONY: dev up down seed
+
+dev:
+	modd
 
 up:
 	migrate -source file://db/migrations -database 'postgres://localhost:5432/lantern-go?sslmode=disable' up
