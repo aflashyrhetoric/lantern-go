@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -34,7 +35,8 @@ func ShowPerson(c *gin.Context) {
 }
 
 func CreatePerson(c *gin.Context) {
-	birthday, err := time.Parse(time.RFC3339, c.PostForm("dob"))
+	spew.Dump(c)
+	birthday, err := time.Parse("2006-01-02", c.PostForm("dob"))
 
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
@@ -50,7 +52,7 @@ func CreatePerson(c *gin.Context) {
 		DOB:       &birthday,
 	}
 
-	err = db.CreatePerson(person)
+	err = db.CreatePerson(&person)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}

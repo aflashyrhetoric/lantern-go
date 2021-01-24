@@ -1,6 +1,7 @@
 package db
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
@@ -34,12 +35,31 @@ func ShowPerson(id string) (*Person, error) {
 	if err != nil {
 		return nil, err
 	}
-	spew.Dump(person)
 
 	return &person, nil
 }
 
-func CreatePerson(p Person) error {
+func (p Person) Validate() (bool, []string) {
+	invalidFields := []string{}
+
+	if p.FirstName == "" {
+		invalidFields = append(invalidFields, "FirstName")
+	}
+
+	if p.LastName == "" {
+		invalidFields = append(invalidFields, "LastName")
+	}
+
+	return len(invalidFields) == 0, invalidFields
+}
+
+func CreatePerson(p *Person) error {
+	valid, fields := p.Validate()
+
+	if !valid {
+		spew.Dump(p)
+		return fmt.Errorf("Following parameters to the CreatePerson func was not provided: %v", fields)
+	}
 	_, err := conn.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob)", &p)
 	if err != nil {
 		return err
@@ -49,7 +69,15 @@ func CreatePerson(p Person) error {
 }
 
 func UpdatePerson(id string, p *Person) error {
+	_, err := conn.NamedExec(`UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob`, p)
+	if err != nil {
+		return err
+	}
 
+	return err
+}
+
+func DeletePerson(id string, p *Person) error {
 	_, err := conn.NamedExec(`UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob`, p)
 	if err != nil {
 		return err

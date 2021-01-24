@@ -19,9 +19,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Routes
 	r.GET("/people", person.GetPeople)
+	r.POST("/people", person.CreatePerson)
 	r.GET("/people/:id", person.ShowPerson)
 	r.PUT("/people/:id", person.UpdatePerson)
-	r.POST("/people", person.CreatePerson)
+
+	// Run
 	r.Run() // listen and serve on localhost:8080
 }
