@@ -49,7 +49,7 @@ func TestSeedPeople(t *testing.T) {
 			panic(err)
 		}
 
-		err = db.CreatePerson(a)
+		err = db.CreatePerson(&a)
 		if err != nil {
 			panic(err)
 		}

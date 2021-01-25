@@ -8,14 +8,14 @@ import (
 )
 
 type Person struct {
-	ID        int        `db:"id, omitempty"`
-	FirstName string     `db:"first_name, omitempty"`
-	LastName  string     `db:"last_name, omitempty"`
-	Career    string     `db:"career, omitempty"`
-	Mobile    string     `db:"mobile, omitempty"`
-	Email     string     `db:"email, omitempty"`
-	Address   string     `db:"address, omitempty"`
-	DOB       *time.Time `db:"dob, omitempty"`
+	ID        int        `db:"id, omitempty" json:"id"`
+	FirstName string     `db:"first_name, omitempty" json:"first_name"`
+	LastName  string     `db:"last_name, omitempty" json:"last_name"`
+	Career    string     `db:"career, omitempty" json:"career"`
+	Mobile    string     `db:"mobile, omitempty" json:"mobile"`
+	Email     string     `db:"email, omitempty" json:"email"`
+	Address   string     `db:"address, omitempty" json:"address"`
+	DOB       *time.Time `db:"dob, omitempty" json:"dob"`
 }
 
 func GetAllPeople() ([]*Person, error) {
@@ -29,7 +29,7 @@ func GetAllPeople() ([]*Person, error) {
 	return people, nil
 }
 
-func ShowPerson(id string) (*Person, error) {
+func GetPersonWithID(id string) (*Person, error) {
 	person := Person{}
 	err := conn.Get(&person, "SELECT * FROM people WHERE id = $1", id)
 	if err != nil {
@@ -69,16 +69,18 @@ func CreatePerson(p *Person) error {
 }
 
 func UpdatePerson(id string, p *Person) error {
-	_, err := conn.NamedExec(`UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob`, p)
+	spew.Dump(p)
+
+	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, address=:address, dob=:dob WHERE id=:id", p)
 	if err != nil {
 		return err
 	}
 
-	return err
+	return nil
 }
 
-func DeletePerson(id string, p *Person) error {
-	_, err := conn.NamedExec(`UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob`, p)
+func DeletePerson(id string) error {
+	_, err := conn.Exec("DELETE FROM people WHERE id=$1", id)
 	if err != nil {
 		return err
 	}

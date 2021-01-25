@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -17,25 +16,24 @@ func GetPeople(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"data": people,
 	})
 }
 
 func ShowPerson(c *gin.Context) {
 	id := c.Param("id")
-	person, err := db.ShowPerson(id)
+	person, err := db.GetPersonWithID(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"data": &person,
 	})
 }
 
 func CreatePerson(c *gin.Context) {
-	spew.Dump(c)
 	birthday, err := time.Parse("2006-01-02", c.PostForm("dob"))
 
 	if err != nil {
@@ -57,7 +55,7 @@ func CreatePerson(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusCreated, gin.H{
 		"data": person,
 	})
 }
@@ -68,7 +66,7 @@ func UpdatePerson(c *gin.Context) {
 	}
 	var id = c.Param("id")
 
-	person, err := db.ShowPerson(id)
+	person, err := db.GetPersonWithID(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
 	}
@@ -92,22 +90,43 @@ func UpdatePerson(c *gin.Context) {
 		person.Address = c.PostForm("address")
 	}
 
-	dob, err := time.Parse(time.RFC3339, c.PostForm("dob"))
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
-	if dob.IsZero() {
-		person.DOB = &dob
-	} else {
-		person.DOB = nil
+	var dob time.Time
+
+	if c.PostForm("dob") != "" {
+		dob, err = time.Parse(time.RFC3339, c.PostForm("dob"))
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
+		}
+
+		if dob.IsZero() {
+			person.DOB = &dob
+		} else {
+			person.DOB = nil
+		}
 	}
 
 	err = db.UpdatePerson(id, person)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("error while updating person %s with error: %v", id, err))
 	}
 
-	c.JSON(200, gin.H{
+	c.JSON(http.StatusOK, gin.H{
 		"data": person,
+	})
+}
+
+func DeletePerson(c *gin.Context) {
+	if c.Param("id") == "" {
+		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("ID Parameter to the UpdatePerson func was not provided"))
+	}
+	var id = c.Param("id")
+
+	err := db.DeletePerson(id)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("error while deleting person %s with error: %v", id, err))
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"data": fmt.Sprintf("person with id %s was successfully deleted", id),
 	})
 }

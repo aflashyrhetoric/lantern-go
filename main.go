@@ -24,6 +24,7 @@ func main() {
 	r.POST("/people", person.CreatePerson)
 	r.GET("/people/:id", person.ShowPerson)
 	r.PUT("/people/:id", person.UpdatePerson)
+	r.DELETE("/people/:id", person.DeletePerson)
 
 	// Run
 	r.Run() // listen and serve on localhost:8080
