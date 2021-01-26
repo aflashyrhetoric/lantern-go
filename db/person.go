@@ -2,24 +2,25 @@ package db
 
 import (
 	"fmt"
-	"time"
 
+	"github.com/aflashyrhetoric/lantern-go/models"
 	"github.com/davecgh/go-spew/spew"
 )
 
 type Person struct {
-	ID        int        `db:"id, omitempty" json:"id"`
-	FirstName string     `db:"first_name, omitempty" json:"first_name"`
-	LastName  string     `db:"last_name, omitempty" json:"last_name"`
-	Career    string     `db:"career, omitempty" json:"career"`
-	Mobile    string     `db:"mobile, omitempty" json:"mobile"`
-	Email     string     `db:"email, omitempty" json:"email"`
-	Address   string     `db:"address, omitempty" json:"address"`
-	DOB       *time.Time `db:"dob, omitempty" json:"dob"`
+	*models.Person
+	// ID        int        `db:"id, omitempty" json:"id"`
+	// FirstName string     `db:"first_name, omitempty" json:"first_name"`
+	// LastName  string     `db:"last_name, omitempty" json:"last_name"`
+	// Career    string     `db:"career, omitempty" json:"career"`
+	// Mobile    string     `db:"mobile, omitempty" json:"mobile"`
+	// Email     string     `db:"email, omitempty" json:"email"`
+	// Address   string     `db:"address, omitempty" json:"address"`
+	// DOB *time.Time `db:"dob, omitempty" json:"dob"`
 }
 
-func GetAllPeople() ([]*Person, error) {
-	people := []*Person{}
+func GetAllPeople() ([]*models.Person, error) {
+	people := []*models.Person{}
 	err := conn.Select(&people, "SELECT * FROM people")
 
 	if err != nil {
@@ -29,8 +30,8 @@ func GetAllPeople() ([]*Person, error) {
 	return people, nil
 }
 
-func GetPersonWithID(id string) (*Person, error) {
-	person := Person{}
+func GetPersonWithID(id string) (*models.Person, error) {
+	person := models.Person{}
 	err := conn.Get(&person, "SELECT * FROM people WHERE id = $1", id)
 	if err != nil {
 		return nil, err
@@ -68,7 +69,7 @@ func CreatePerson(p *Person) error {
 	return err
 }
 
-func UpdatePerson(id string, p *Person) error {
+func UpdatePerson(id string, p *models.Person) error {
 	spew.Dump(p)
 
 	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, address=:address, dob=:dob WHERE id=:id", p)

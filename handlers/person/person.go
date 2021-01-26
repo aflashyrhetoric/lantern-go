@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
+	"github.com/aflashyrhetoric/lantern-go/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -41,13 +42,15 @@ func CreatePerson(c *gin.Context) {
 	}
 
 	person := db.Person{
-		FirstName: c.PostForm("first_name"),
-		LastName:  c.PostForm("last_name"),
-		Career:    c.PostForm("career"),
-		Mobile:    c.PostForm("mobile"),
-		Email:     c.PostForm("email"),
-		Address:   c.PostForm("address"),
-		DOB:       &birthday,
+		Person: &models.Person{
+			FirstName: c.PostForm("first_name"),
+			LastName:  c.PostForm("last_name"),
+			Career:    c.PostForm("career"),
+			Mobile:    c.PostForm("mobile"),
+			Email:     c.PostForm("email"),
+			Address:   c.PostForm("address"),
+			DOB:       &birthday,
+		},
 	}
 
 	err = db.CreatePerson(&person)
@@ -69,6 +72,7 @@ func UpdatePerson(c *gin.Context) {
 	person, err := db.GetPersonWithID(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
+
 	}
 
 	if c.PostForm("first_name") != "" {
