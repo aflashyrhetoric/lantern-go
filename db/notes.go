@@ -55,7 +55,7 @@ func CreateNote(n *Note) error {
 	return err
 }
 
-func UpdateNote(id string, n *Note) error {
+func UpdateNote(id string, n *models.Note) error {
 	_, err := conn.NamedExec("UPDATE notes SET text=:text WHERE id=:id", n)
 	if err != nil {
 		return err

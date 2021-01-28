@@ -121,7 +121,7 @@ func UpdatePerson(c *gin.Context) {
 
 func DeletePerson(c *gin.Context) {
 	if c.Param("id") == "" {
-		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("ID Parameter to the UpdatePerson func was not provided"))
+		c.AbortWithError(http.StatusBadRequest, fmt.Errorf("ID Parameter to the DeletePerson func was not provided"))
 	}
 	var id = c.Param("id")
 

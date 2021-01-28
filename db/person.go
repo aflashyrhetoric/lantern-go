@@ -58,7 +58,7 @@ func CreatePerson(p *Person) error {
 	valid, fields := p.Validate()
 
 	if !valid {
-		spew.Dump(p)
+		// spew.Dump(p)
 		return fmt.Errorf("Following parameters to the CreatePerson func was not provided: %v", fields)
 	}
 	_, err := conn.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob)", &p)

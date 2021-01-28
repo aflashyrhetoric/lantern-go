@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
+	"github.com/aflashyrhetoric/lantern-go/handlers/notes"
 	"github.com/aflashyrhetoric/lantern-go/handlers/person"
 	"github.com/gin-gonic/gin"
 
@@ -25,6 +26,13 @@ func main() {
 	r.GET("/people/:id", person.ShowPerson)
 	r.PUT("/people/:id", person.UpdatePerson)
 	r.DELETE("/people/:id", person.DeletePerson)
+
+	// Notes
+	r.GET("/notes", notes.GetAllNotes)
+	r.POST("/notes", notes.CreateNote)
+	r.PUT("/notes/:id", notes.UpdateNote)
+	r.GET("/notes/:id", notes.ShowNote)
+	r.DELETE("/notes/:id", notes.DeleteNote)
 
 	// Run
 	r.Run() // listen and serve on localhost:8080
