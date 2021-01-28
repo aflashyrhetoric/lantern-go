@@ -6,6 +6,8 @@ import (
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/handlers/notes"
 	"github.com/aflashyrhetoric/lantern-go/handlers/person"
+
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
 	_ "net/http"
@@ -13,6 +15,13 @@ import (
 
 func main() {
 	r := gin.Default()
+
+	// Add some middleware for cors
+	config := cors.DefaultConfig()
+	config.AllowOrigins = []string{"*"}
+	// config.AllowOrigins == []string{"http://google.com", "http://facebook.com"}
+
+	r.Use(cors.New(config))
 
 	// Use the InitDB function to initialise the global variable.
 	err := db.Start("user=ko dbname=lantern-go sslmode=disable")
