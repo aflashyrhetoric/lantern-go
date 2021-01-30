@@ -9,11 +9,11 @@ CREATE TABLE "people" (
   "dob" timestamp
 );
 
-CREATE TABLE "strengths" (
-  "id" SERIAL PRIMARY KEY,
-  "person_id" int,
-  "description" text
-);
+-- CREATE TABLE "strengths" (
+--   "id" SERIAL PRIMARY KEY,
+--   "person_id" int,
+--   "description" text
+-- );
 
 CREATE TABLE "pressure_points" (
   "id" SERIAL PRIMARY KEY,
@@ -21,10 +21,10 @@ CREATE TABLE "pressure_points" (
   "description" text
 );
 
-CREATE TABLE "attendees" (
-  "attendee_id" int,
-  "event_id" int
-);
+-- CREATE TABLE "attendees" (
+--   "attendee_id" int,
+--   "event_id" int
+-- );
 
 CREATE TABLE "notes" (
   "id" SERIAL PRIMARY KEY,
@@ -32,12 +32,12 @@ CREATE TABLE "notes" (
   "text" text
 );
 
-CREATE TABLE "events" (
-  "id" SERIAL PRIMARY KEY,
-  "event_description" text,
-  "notes" text,
-  "date" timestamp
-);
+-- CREATE TABLE "events" (
+--   "id" SERIAL PRIMARY KEY,
+--   "event_description" text,
+--   "notes" text,
+--   "date" timestamp
+-- );
 
 CREATE TABLE "relationship" (
   "id" SERIAL PRIMARY KEY,
@@ -50,9 +50,9 @@ ALTER TABLE "strengths" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id")
 
 ALTER TABLE "pressure_points" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
-ALTER TABLE "attendees" ADD FOREIGN KEY ("attendee_id") REFERENCES "people" ("id");
+-- ALTER TABLE "attendees" ADD FOREIGN KEY ("attendee_id") REFERENCES "people" ("id");
 
-ALTER TABLE "attendees" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
+-- ALTER TABLE "attendees" ADD FOREIGN KEY ("event_id") REFERENCES "events" ("id");
 
 ALTER TABLE "notes" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
