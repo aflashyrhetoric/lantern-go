@@ -7,6 +7,7 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,23 +36,31 @@ func ShowPerson(c *gin.Context) {
 }
 
 func CreatePerson(c *gin.Context) {
-	birthday, err := time.Parse("2006-01-02", c.PostForm("dob"))
+	var (
+		birthday time.Time
+		err      error
+	)
 
+	if c.PostForm("dob") != "" {
+		birthday, err = time.Parse("2006-01-02", c.PostForm("dob"))
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, err)
+		}
+	}
+
+	dbModel := &models.Person{}
+	err = c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
+	dbModel.DOB = &birthday
+
 	person := db.Person{
-		Person: &models.Person{
-			FirstName: c.PostForm("first_name"),
-			LastName:  c.PostForm("last_name"),
-			Career:    c.PostForm("career"),
-			Mobile:    c.PostForm("mobile"),
-			Email:     c.PostForm("email"),
-			Address:   c.PostForm("address"),
-			DOB:       &birthday,
-		},
+		Person: dbModel,
 	}
+
+	spew.Dump(person)
 
 	err = db.CreatePerson(&person)
 	if err != nil {
