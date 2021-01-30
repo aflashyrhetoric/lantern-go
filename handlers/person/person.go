@@ -7,7 +7,6 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -37,30 +36,39 @@ func ShowPerson(c *gin.Context) {
 
 func CreatePerson(c *gin.Context) {
 	var (
-		birthday time.Time
-		err      error
+		dob time.Time
+		err error
 	)
 
-	if c.PostForm("dob") != "" {
-		birthday, err = time.Parse("2006-01-02", c.PostForm("dob"))
-		if err != nil {
-			c.AbortWithError(http.StatusInternalServerError, err)
-		}
-	}
-
-	dbModel := &models.Person{}
+	dbModel := &models.PersonRequest{}
 	err = c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	dbModel.DOB = &birthday
-
 	person := db.Person{
-		Person: dbModel,
+		Person: &models.Person{
+			FirstName: dbModel.FirstName,
+			LastName:  dbModel.LastName,
+			Career:    dbModel.Career,
+			Mobile:    dbModel.Mobile,
+			Email:     dbModel.Email,
+			Address:   dbModel.Address,
+		},
 	}
 
-	spew.Dump(person)
+	if dbModel.DOB != "" {
+		dob, err = time.Parse("2006-01-02", dbModel.DOB)
+		if err != nil {
+			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
+		}
+
+		if dob.IsZero() {
+			person.DOB = nil
+		} else {
+			person.DOB = &dob
+		}
+	}
 
 	err = db.CreatePerson(&person)
 	if err != nil {
@@ -81,40 +89,45 @@ func UpdatePerson(c *gin.Context) {
 	person, err := db.GetPersonalData(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
-
 	}
 
-	if c.PostForm("first_name") != "" {
-		person.FirstName = c.PostForm("first_name")
+	dbModel := &models.PersonRequest{}
+	err = c.BindJSON(&dbModel)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not bind the values to JSON for person %v", err))
 	}
-	if c.PostForm("last_name") != "" {
-		person.LastName = c.PostForm("last_name")
+
+	if dbModel.FirstName != "" {
+		person.FirstName = dbModel.FirstName
 	}
-	if c.PostForm("career") != "" {
-		person.Career = c.PostForm("career")
+	if dbModel.LastName != "" {
+		person.LastName = dbModel.LastName
 	}
-	if c.PostForm("mobile") != "" {
-		person.Mobile = c.PostForm("mobile")
+	if dbModel.Career != "" {
+		person.Career = dbModel.Career
 	}
-	if c.PostForm("email") != "" {
-		person.Email = c.PostForm("email")
+	if dbModel.Mobile != "" {
+		person.Mobile = dbModel.Mobile
 	}
-	if c.PostForm("address") != "" {
-		person.Address = c.PostForm("address")
+	if dbModel.Email != "" {
+		person.Email = dbModel.Email
+	}
+	if dbModel.Address != "" {
+		person.Address = dbModel.Address
 	}
 
 	var dob time.Time
 
-	if c.PostForm("dob") != "" {
-		dob, err = time.Parse(time.RFC3339, c.PostForm("dob"))
+	if dbModel.DOB != "" {
+		dob, err = time.Parse("2006-01-02", dbModel.DOB)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
 		}
 
 		if dob.IsZero() {
-			person.DOB = &dob
-		} else {
 			person.DOB = nil
+		} else {
+			person.DOB = &dob
 		}
 	}
 
