@@ -1,6 +1,8 @@
 package models
 
-import "time"
+import (
+	"time"
+)
 
 type Person struct {
 	ID        int        `db:"id, omitempty" json:"id"`
@@ -11,4 +13,7 @@ type Person struct {
 	Email     string     `db:"email, omitempty" json:"email"`
 	Address   string     `db:"address, omitempty" json:"address"`
 	DOB       *time.Time `db:"dob, omitempty" json:"dob"`
+
+	Notes          []Note          `json:"notes"`
+	PressurePoints []PressurePoint `json:"pressure_points"`
 }

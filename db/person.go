@@ -30,7 +30,47 @@ func GetAllPeople() ([]*models.Person, error) {
 	return people, nil
 }
 
-func GetPersonWithID(id string) (*models.Person, error) {
+func GetPerson(id string) (*models.Person, error) {
+	person := models.Person{}
+	// err := conn.Get(&person, `
+	// 	SELECT
+	// 		p.id,
+	// 		p.first_name,
+	// 		p.last_name,
+	// 		p.career,
+	// 		p.mobile,
+	// 		p.email,
+	// 		p.address,
+	// 		p.dob
+	// 	FROM people p
+	// 	INNER JOIN notes n
+	// 		on n.person_id = $1
+	// 	INNER JOIN pressure_points pp
+	// 		on pp.person_id = $1
+	// 	WHERE
+	// 		p.id = $1
+	// `, id)
+	err := conn.Get(&person, "SELECT * FROM people WHERE id = $1", id)
+	spew.Dump(person)
+
+	notes := []models.Note{}
+	err = conn.Select(&notes, "SELECT id, text FROM notes WHERE person_id = $1", id)
+
+	points := []models.PressurePoint{}
+	err = conn.Select(&points, "SELECT id, description FROM pressure_points WHERE person_id = $1", id)
+
+	person.Notes = notes
+	person.PressurePoints = points
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &person, nil
+
+}
+
+func GetPersonalData(id string) (*models.Person, error) {
 	person := models.Person{}
 	err := conn.Get(&person, "SELECT * FROM people WHERE id = $1", id)
 	if err != nil {

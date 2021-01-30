@@ -24,7 +24,7 @@ func GetPeople(c *gin.Context) {
 
 func ShowPerson(c *gin.Context) {
 	id := c.Param("id")
-	person, err := db.GetPersonWithID(id)
+	person, err := db.GetPerson(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
@@ -69,7 +69,7 @@ func UpdatePerson(c *gin.Context) {
 	}
 	var id = c.Param("id")
 
-	person, err := db.GetPersonWithID(id)
+	person, err := db.GetPersonalData(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
 
