@@ -14,6 +14,6 @@ type Person struct {
 	Address   string     `db:"address, omitempty" json:"address"`
 	DOB       *time.Time `db:"dob, omitempty" json:"dob"`
 
-	Notes          []Note          `json:"notes"`
-	PressurePoints []PressurePoint `json:"pressure_points"`
+	Notes          []Note          `json:"notes,omitempty"`
+	PressurePoints []PressurePoint `json:"pressure_points,omitempty"`
 }
