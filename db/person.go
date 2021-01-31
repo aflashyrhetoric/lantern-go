@@ -99,7 +99,7 @@ func CreatePerson(p *Person) error {
 }
 
 func UpdatePerson(id string, p *models.Person) error {
-	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, address=:address, dob=:dob WHERE id=:id", p)
+	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob WHERE id=:id", p)
 	if err != nil {
 		return err
 	}

@@ -7,6 +7,7 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
+	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -57,8 +58,8 @@ func CreatePerson(c *gin.Context) {
 		},
 	}
 
-	if dbModel.DOB != "" {
-		dob, err = time.Parse("2006-01-02", dbModel.DOB)
+	if dbModel.DOB != nil {
+		dob, err = time.Parse("2006-01-02", *dbModel.DOB)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
 		}
@@ -117,19 +118,20 @@ func UpdatePerson(c *gin.Context) {
 	}
 
 	var dob time.Time
-
-	if dbModel.DOB != "" {
-		dob, err = time.Parse("2006-01-02", dbModel.DOB)
+	if dbModel.DOB != nil {
+		dob, err = time.Parse("2006-01-02", *dbModel.DOB)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
 		}
-
-		if dob.IsZero() {
-			person.DOB = nil
-		} else {
-			person.DOB = &dob
-		}
 	}
+
+	if dob.IsZero() {
+		person.DOB = nil
+	} else {
+		person.DOB = &dob
+	}
+
+	spew.Dump(person)
 
 	err = db.UpdatePerson(id, person)
 	if err != nil {
