@@ -39,14 +39,14 @@ CREATE TABLE "notes" (
 --   "date" timestamp
 -- );
 
-CREATE TABLE "relationship" (
-  "id" SERIAL PRIMARY KEY,
-  "person_one_id" int,
-  "person_two_id" int,
-  "relationship_type" text
-);
+-- CREATE TABLE "relationship" (
+--   "id" SERIAL PRIMARY KEY,
+--   "person_one_id" int,
+--   "person_two_id" int,
+--   "relationship_type" text
+-- );
 
-ALTER TABLE "strengths" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
+-- ALTER TABLE "strengths" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
 ALTER TABLE "pressure_points" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
@@ -56,6 +56,6 @@ ALTER TABLE "pressure_points" ADD FOREIGN KEY ("person_id") REFERENCES "people" 
 
 ALTER TABLE "notes" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
-ALTER TABLE "relationship" ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
+-- ALTER TABLE "relationship" ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
 
-ALTER TABLE "relationship" ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");
+-- ALTER TABLE "relationship" ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");

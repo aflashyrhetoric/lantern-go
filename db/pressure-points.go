@@ -45,7 +45,7 @@ func (n PressurePoint) Validate() (bool, []string) {
 	invalidFields := []string{}
 
 	if n.Description == "" {
-		invalidFields = append(invalidFields, "Text")
+		invalidFields = append(invalidFields, "Description")
 	}
 
 	return len(invalidFields) == 0, invalidFields
