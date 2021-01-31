@@ -10,10 +10,21 @@ type Note struct {
 	*models.Note
 }
 
-func GetAllNotes() ([]*models.Note, error) {
-	notes := []*models.Note{}
-	err := conn.Select(&notes, "SELECT * FROM Notes")
+// func GetAllNotes(id string) ([]*models.Note, error) {
 
+// 	notes := []*models.Note{}
+// 	err := conn.Select(&notes, "SELECT * FROM notes WHERE person_id = $1", id)
+
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return notes, nil
+// }
+
+func GetNotesForPerson(id string) ([]models.Note, error) {
+	notes := []models.Note{}
+	err := conn.Select(&notes, "SELECT id, text FROM notes WHERE person_id = $1", id)
 	if err != nil {
 		return nil, err
 	}
@@ -55,14 +66,14 @@ func CreateNote(n *Note) error {
 	return err
 }
 
-func UpdateNote(id string, n *models.Note) error {
-	_, err := conn.NamedExec("UPDATE notes SET text=:text WHERE id=:id", n)
-	if err != nil {
-		return err
-	}
+// func UpdateNote(id string, n *models.Note) error {
+// 	_, err := conn.NamedExec("UPDATE notes SET text=:text WHERE id=:id", n)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func DeleteNote(id string) error {
 	_, err := conn.Exec("DELETE FROM notes WHERE id=$1", id)

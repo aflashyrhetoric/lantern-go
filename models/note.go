@@ -5,3 +5,7 @@ type Note struct {
 	Text     string `db:"text" json:"text"`
 	PersonID int    `db:"person_id" json:"person_id,omitempty"`
 }
+
+type NoteRequest struct {
+	Text string `db:"text" json:"text"`
+}

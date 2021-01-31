@@ -5,3 +5,7 @@ type PressurePoint struct {
 	Description string `db:"description" json:"description"`
 	PersonID    int    `db:"person_id" json:"person_id,omitempty"`
 }
+
+type PressurePointRequest struct {
+	Description string `db:"description" json:"description"`
+}

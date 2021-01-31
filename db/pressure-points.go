@@ -21,15 +21,25 @@ func GetAllPressurePoints() ([]*models.PressurePoint, error) {
 	return points, nil
 }
 
-func GetPressurePointWithID(id string) (*models.PressurePoint, error) {
-	point := models.PressurePoint{}
-	err := conn.Get(&point, "SELECT * FROM pressure_points WHERE id = $1", id)
+func GetPressurePointsForPerson(id string) ([]models.PressurePoint, error) {
+	points := []models.PressurePoint{}
+	err := conn.Select(&points, "SELECT id, description FROM pressure_points WHERE person_id = $1", id)
 	if err != nil {
 		return nil, err
 	}
 
-	return &point, nil
+	return points, nil
 }
+
+// func GetPressurePointWithID(id string) (*models.PressurePoint, error) {
+// 	point := models.PressurePoint{}
+// 	err := conn.Get(&point, "SELECT * FROM pressure_points WHERE id = $1", id)
+// 	if err != nil {
+// 		return nil, err
+// 	}
+
+// 	return &point, nil
+// }
 
 func (n PressurePoint) Validate() (bool, []string) {
 	invalidFields := []string{}
@@ -55,14 +65,14 @@ func CreatePressurePoint(n *PressurePoint) error {
 	return err
 }
 
-func UpdatePressurePoint(id string, n *models.PressurePoint) error {
-	_, err := conn.NamedExec("UPDATE pressure_points SET description=:description WHERE id=:id", n)
-	if err != nil {
-		return err
-	}
+// func UpdatePressurePoint(id string, n *models.PressurePoint) error {
+// 	_, err := conn.NamedExec("UPDATE pressure_points SET description=:description WHERE id=:id", n)
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-}
+// 	return nil
+// }
 
 func DeletePressurePoint(id string) error {
 	_, err := conn.Exec("DELETE FROM pressure_points WHERE id=$1", id)
