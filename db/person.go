@@ -108,7 +108,23 @@ func UpdatePerson(id string, p *models.Person) error {
 }
 
 func DeletePerson(id string) error {
-	_, err := conn.Exec("DELETE FROM people WHERE id=$1", id)
+
+	tx, err := conn.Begin()
+	_, err = tx.Exec("DELETE FROM notes WHERE person_id=$1", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM pressure_points WHERE person_id=$1", id)
+	if err != nil {
+		return err
+	}
+
+	_, err = tx.Exec("DELETE FROM people WHERE id=$1", id)
+	if err != nil {
+		return err
+	}
+	err = tx.Commit()
 	if err != nil {
 		return err
 	}
