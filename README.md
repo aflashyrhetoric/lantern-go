@@ -29,9 +29,10 @@ go test -run TestSeedNotes ./seed
 go test -run TestSeedPressurePoints ./seed
 ```
 
-## ENV
-
-Plan:
-- Detect env value for environment
-- conditionally set db strign to localhost or actually using ENV file's values like `DB_HOST` or whatever to build up the connection string
-- When moved to Digitalocean we can add the same vars through the GUI
+## Environment Variable Configuration
+- Ensure that environment variable `LANTERN_ENV` is configured as `development` for dev and `production` for production. 
+  - For local dev, you can do this via a `.zshrc` export: `export LANTERN_ENV=production`
+  - For DigitalOcean Apps, through the Web UI
+- `lantern-go` will load `LANTERN_ENV` and:
+  - if `development`, will load using `.env`
+  - if `production`, will load using standard os.Getenv without an `.env`
