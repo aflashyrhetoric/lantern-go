@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/handlers"
@@ -40,12 +41,15 @@ func main() {
 	DB_SSLMODE := os.Getenv("DB_SSLMODE")
 
 	var connectionString string
+	port, _ := strconv.Atoi(DB_PORT)
 
 	if DB_ENV == "development" {
-		connectionString = fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s", DB_HOST, DB_PORT, DB_USER, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_DATABASE, DB_SSLMODE)
 	} else {
-		connectionString = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
 	}
+
+	fmt.Print(connectionString)
 
 	// Use the InitDB function to initialise the global variable.
 	err = db.Start(connectionString)
