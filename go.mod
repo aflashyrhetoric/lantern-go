@@ -8,6 +8,7 @@ require (
 	github.com/gin-contrib/cors v1.3.1 // indirect
 	github.com/gin-gonic/gin v1.6.3
 	github.com/jmoiron/sqlx v1.2.0
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/lib/pq v1.0.0
 	google.golang.org/appengine v1.6.7 // indirect
 	syreclabs.com/go/faker v1.2.3 // indirect

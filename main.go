@@ -1,10 +1,13 @@
 package main
 
 import (
+	"fmt"
 	"log"
+	"os"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/handlers"
+	"github.com/joho/godotenv"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -22,8 +25,30 @@ func main() {
 
 	r.Use(cors.New(config))
 
+	// Load ENV Variables
+	err := godotenv.Load()
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
+
+	DB_ENV := os.Getenv("ENV")
+	DB_HOST := os.Getenv("DB_HOST")
+	DB_PORT := os.Getenv("DB_PORT")
+	DB_USER := os.Getenv("DB_USER")
+	DB_PASSWORD := os.Getenv("DB_PASSWORD")
+	DB_DATABASE := os.Getenv("DB_DATABASE")
+	DB_SSLMODE := os.Getenv("DB_SSLMODE")
+
+	var connectionString string
+
+	if DB_ENV == "development" {
+		connectionString = fmt.Sprintf("host=%s port=%s user=%s dbname=%s sslmode=%s", DB_HOST, DB_PORT, DB_USER, DB_DATABASE, DB_SSLMODE)
+	} else {
+		connectionString = fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
+	}
+
 	// Use the InitDB function to initialise the global variable.
-	err := db.Start("user=ko dbname=lantern-go sslmode=disable")
+	err = db.Start(connectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
