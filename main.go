@@ -27,32 +27,39 @@ func main() {
 	r.Use(cors.New(config))
 
 	// Load ENV Variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
-
-	DB_ENV := os.Getenv("ENV")
-	DB_HOST := os.Getenv("DB_HOST")
-	DB_PORT := os.Getenv("DB_PORT")
-	DB_USER := os.Getenv("DB_USER")
-	DB_PASSWORD := os.Getenv("DB_PASSWORD")
-	DB_DATABASE := os.Getenv("DB_DATABASE")
-	DB_SSLMODE := os.Getenv("DB_SSLMODE")
-
+	ENV := os.Getenv("LANTERN_ENV")
 	var connectionString string
-	port, _ := strconv.Atoi(DB_PORT)
 
-	if DB_ENV == "development" {
+	if ENV == "development" {
+		err := godotenv.Load()
+		if err != nil {
+			log.Fatal("Error loading .env file")
+		}
+		DB_HOST := os.Getenv("DB_HOST")
+		DB_PORT := os.Getenv("DB_PORT")
+		DB_USER := os.Getenv("DB_USER")
+		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+
+		port, _ := strconv.Atoi(DB_PORT)
+
 		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_DATABASE, DB_SSLMODE)
 	} else {
+
+		DB_HOST := os.Getenv("DB_HOST")
+		DB_PORT := os.Getenv("DB_PORT")
+		DB_USER := os.Getenv("DB_USER")
+		DB_PASSWORD := os.Getenv("DB_PASSWORD")
+		DB_DATABASE := os.Getenv("DB_DATABASE")
+		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+
+		port, _ := strconv.Atoi(DB_PORT)
+
 		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
 	}
 
-	fmt.Print(connectionString)
-
 	// Use the InitDB function to initialise the global variable.
-	err = db.Start(connectionString)
+	err := db.Start(connectionString)
 	if err != nil {
 		log.Fatal(err)
 	}
