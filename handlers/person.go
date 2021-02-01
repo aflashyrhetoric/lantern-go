@@ -7,7 +7,6 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
-	"github.com/davecgh/go-spew/spew"
 	"github.com/gin-gonic/gin"
 )
 
@@ -131,7 +130,7 @@ func UpdatePerson(c *gin.Context) {
 		person.DOB = &dob
 	}
 
-	spew.Dump(person)
+	// spew.Dump(person)
 
 	err = db.UpdatePerson(id, person)
 	if err != nil {
