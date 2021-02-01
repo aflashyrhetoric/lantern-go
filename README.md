@@ -36,3 +36,4 @@ go test -run TestSeedPressurePoints ./seed
 - `lantern-go` will load `LANTERN_ENV` and:
   - if `development`, will load using `.env`
   - if `production`, will load using standard os.Getenv without an `.env`
+- Duplicate the .env.example file and create a database with the corresponding values in postgres
