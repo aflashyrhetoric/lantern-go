@@ -4,7 +4,7 @@ CREATE TABLE "people" (
   "last_name" text,
   "career" text,
   "mobile" text,
-  "email" text UNIQUE,
+  "email" text,
   "address" text,
   "dob" timestamp
 );
