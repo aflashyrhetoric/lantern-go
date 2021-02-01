@@ -36,3 +36,6 @@ go test -run TestSeedPressurePoints ./seed
 - `lantern-go` will load `LANTERN_ENV` and:
   - if `development`, will load using `.env`
   - if `production`, will load using standard os.Getenv without an `.env`
+
+## RUNNING MIGRATIONS
+This is a big to-do, but for now: we will not need to run multiple migrations - just go onto the DigitalOcean Web UI to get the PostgreSQL's component's login information - connect manually or using TablePlus/similar, and run the SQL.up migration SQL file that we have in `db/migrations`. 
