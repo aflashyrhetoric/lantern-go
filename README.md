@@ -3,14 +3,20 @@
 ## Dependencies
 
 - `brew install modd`
+- `go get`
 
+We use `go-migrate` to create and run migrations.
 ## Dev Flow
 
 `modd` to run the main.go and run gin server
 
 ## Migrations
 
-TODO: Use a Makefile or something LOL
+To create a new migration, run:
+
+```sh
+migrate create -ext sql -dir db/migrations -seq create_users_table
+```
 
 ```sh
 export CONNECTION_STRING="-source file://db/migrations -database 'postgres://localhost:5432/lantern-go?sslmode=disable'"
