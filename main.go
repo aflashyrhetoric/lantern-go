@@ -79,6 +79,10 @@ func main() {
 	r.POST("/pressure-points/:person_id", handlers.CreatePressurePoint)
 	r.DELETE("/pressure-points/:id", handlers.DeletePressurePoint)
 
+	// Notes
+	r.POST("/users", handlers.CreateUser)
+	// r.DELETE("/notes/:id", handlers.DeleteNote)
+
 	// Run
 	r.Run() // listen and serve on localhost:8080
 }

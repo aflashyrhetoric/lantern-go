@@ -1,19 +1,27 @@
+Table users {
+  id int [pk, increment]
+  email text
+  password text [not null]
+  created_at timestamp
+}
+
 Table people {
   id int [pk, increment]
   first_name text
   last_name text
   career text
   mobile text 
-  email text [unique]
+  email text 
   address text
   dob timestamp
+  user_id int [ref: > users.id]
 }
 
-Table strengths {
-  id int [pk, increment]
-  person_id int [ref: > people.id]
-  description text
-}
+// Table strengths {
+//   id int [pk, increment]
+//   person_id int [ref: > people.id]
+//   description text
+// }
 
 Table pressure_points {
   id int [pk, increment]
@@ -21,10 +29,10 @@ Table pressure_points {
   description text
 }
 
-Table attendees {
-  attendee_id int [ref: > people.id]
-  event_id int [ref: > events.id]
-}
+// Table attendees {
+//   attendee_id int [ref: > people.id]
+//   event_id int [ref: > events.id]
+// }
 
 Table notes {
   id int [pk, increment]
@@ -32,12 +40,12 @@ Table notes {
   text text
 }
 
-Table events {
-  id int [pk, increment]
-  event_description text
-  notes text
-  date timestamp
-}
+// Table events {
+//   id int [pk, increment]
+//   event_description text
+//   notes text
+//   date timestamp
+// }
 
 Table relationship {
   id int [pk, increment]
