@@ -5,7 +5,6 @@ import (
 	"net/http"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
-	"github.com/aflashyrhetoric/lantern-go/models"
 	"github.com/gin-gonic/gin"
 )
 
@@ -20,30 +19,6 @@ func ShowUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"data": &user,
-	})
-}
-
-func CreateUser(c *gin.Context) {
-	dbModel := &models.UserRequest{}
-	err := c.BindJSON(&dbModel)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
-
-	user := db.User{
-		User: &models.User{
-			Email:    dbModel.Email,
-			Password: dbModel.Password,
-		},
-	}
-
-	err = db.CreateUser(&user)
-	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
-	}
-
-	c.JSON(http.StatusCreated, gin.H{
-		"data": user,
 	})
 }
 

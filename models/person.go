@@ -13,6 +13,7 @@ type Person struct {
 	Email     string     `db:"email" json:"email"`
 	Address   string     `db:"address" json:"address"`
 	DOB       *time.Time `db:"dob" json:"dob"`
+	UserID    int        `db:"user_id" json:"user_id"`
 
 	Notes          []Note          `json:"notes,omitempty"`
 	PressurePoints []PressurePoint `json:"pressure_points,omitempty"`

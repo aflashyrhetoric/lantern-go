@@ -47,7 +47,6 @@ func GetPerson(id string) (*models.Person, error) {
 	}
 
 	return &person, nil
-
 }
 
 func GetPersonalData(id string) (*models.Person, error) {

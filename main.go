@@ -16,8 +16,12 @@ import (
 	_ "net/http"
 )
 
+var JWT_SIGNING_KEY string
+
 func main() {
 	r := gin.Default()
+
+	protected := r.Group("/")
 
 	// Add some middleware for cors
 	config := cors.DefaultConfig()
@@ -40,6 +44,7 @@ func main() {
 		DB_USER := os.Getenv("DB_USER")
 		DB_DATABASE := os.Getenv("DB_DATABASE")
 		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+		JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
 
 		port, _ := strconv.Atoi(DB_PORT)
 
@@ -64,23 +69,27 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Auth
+	protected.POST("/auth/signup", handlers.CreateUser)
+	protected.POST("/auth/login", handlers.LoginUser)
+
 	// Routes
-	r.GET("/people", handlers.GetPeople)
-	r.POST("/people", handlers.CreatePerson)
-	r.GET("/people/:id", handlers.ShowPerson)
-	r.PUT("/people/:id", handlers.UpdatePerson)
-	r.DELETE("/people/:id", handlers.DeletePerson)
+	protected.GET("/people", handlers.GetPeople)
+	protected.POST("/people", handlers.CreatePerson)
+	protected.GET("/people/:id", handlers.ShowPerson)
+	protected.PUT("/people/:id", handlers.UpdatePerson)
+	protected.DELETE("/people/:id", handlers.DeletePerson)
 
 	// Notes
-	r.POST("/notes/:person_id", handlers.CreateNote)
-	r.DELETE("/notes/:id", handlers.DeleteNote)
+	protected.POST("/notes/:person_id", handlers.CreateNote)
+	protected.DELETE("/notes/:id", handlers.DeleteNote)
 
 	// Pressure Points
-	r.POST("/pressure-points/:person_id", handlers.CreatePressurePoint)
-	r.DELETE("/pressure-points/:id", handlers.DeletePressurePoint)
+	protected.POST("/pressure-points/:person_id", handlers.CreatePressurePoint)
+	protected.DELETE("/pressure-points/:id", handlers.DeletePressurePoint)
 
-	// Notes
-	r.POST("/users", handlers.CreateUser)
+	// Users
+	// r.POST("/users", handlers.CreateUser)
 	// r.DELETE("/notes/:id", handlers.DeleteNote)
 
 	// Run

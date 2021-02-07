@@ -17,7 +17,17 @@ func GetUser(id string) (*models.User, error) {
 	}
 
 	return &user, nil
+}
 
+func GetUserByEmail(email string) (*models.User, error) {
+	user := models.User{}
+	err := conn.Get(&user, "SELECT * FROM users WHERE email = $1", email)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
 }
 
 // func GetUserData(id string) (*models.User, error) {
