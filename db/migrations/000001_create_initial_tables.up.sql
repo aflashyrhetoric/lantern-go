@@ -1,6 +1,6 @@
 CREATE TABLE "users" (
   "id" SERIAL PRIMARY KEY,
-  "email" text,
+  "email" text UNIQUE,
   "password" text NOT NULL,
   "created_at" timestamp
 );

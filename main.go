@@ -70,7 +70,7 @@ func main() {
 	}
 
 	// Auth
-	protected.POST("/auth/signup", handlers.CreateUser)
+	protected.POST("/auth/signup", handlers.SignupUser)
 	protected.POST("/auth/login", handlers.LoginUser)
 
 	// Routes

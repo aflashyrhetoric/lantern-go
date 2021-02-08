@@ -1,6 +1,6 @@
 Table users {
   id int [pk, increment]
-  email text
+  email text [unique]
   password text [not null]
   created_at timestamp
 }

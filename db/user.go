@@ -2,6 +2,7 @@ package db
 
 import (
 	"github.com/aflashyrhetoric/lantern-go/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type User struct {
@@ -41,7 +42,15 @@ func GetUserByEmail(email string) (*models.User, error) {
 // }
 
 func CreateUser(p *User) error {
-	_, err := conn.NamedExec("INSERT into users (email, password) VALUES (:email, :password)", &p)
+
+	userPW := p.Password
+	hashed, err := bcrypt.GenerateFromPassword([]byte(userPW), 10)
+	if err != nil {
+		return err
+	}
+	p.Password = string(hashed[:])
+
+	_, err = conn.NamedExec("INSERT into users (email, password, created_at) VALUES (:email, :password, :created_at)", &p)
 	if err != nil {
 		return err
 	}
