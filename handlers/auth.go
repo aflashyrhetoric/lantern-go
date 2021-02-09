@@ -2,15 +2,17 @@ package handlers
 
 import (
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
-	"github.com/davecgh/go-spew/spew"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var JWT_SIGNING_KEY string
 
 func SignupUser(c *gin.Context) {
 	dbModel := &models.UserRequest{}
@@ -60,7 +62,8 @@ func LoginUser(c *gin.Context) {
 	}
 
 	// Create the token
-	mySigningKey := []byte("minimoo")
+	JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
+	mySigningKey := []byte(JWT_SIGNING_KEY)
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := jwt.MapClaims{
 		"id":  user.ID,
@@ -72,8 +75,6 @@ func LoginUser(c *gin.Context) {
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
-
-	spew.Dump(token)
 
 	// BY HERE: User is created
 	c.JSON(http.StatusCreated, gin.H{
