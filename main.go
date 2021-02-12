@@ -16,19 +16,22 @@ import (
 	_ "net/http"
 )
 
-var JWT_SIGNING_KEY string
+// var JWTSigningKey string
 
 func main() {
 	r := gin.Default()
 
-	protected := r.Group("/")
+	config := cors.DefaultConfig()
+	config.AllowCredentials = true
+	// config.AllowAllOrigins = true
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	config.AllowHeaders = []string{"Content-Type, *"}
+	r.Use(cors.New(config))
 
 	// Add some middleware for cors
-	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
-	// config.AllowOrigins == []string{"http://google.com", "http://facebook.com"}
-
-	r.Use(cors.New(config))
+	protected := r.Group("/api/")
+	// protected.Use(cors.New(config))
 
 	// Load ENV Variables
 	ENV := os.Getenv("LANTERN_ENV")
@@ -39,28 +42,28 @@ func main() {
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
-		DB_HOST := os.Getenv("DB_HOST")
-		DB_PORT := os.Getenv("DB_PORT")
-		DB_USER := os.Getenv("DB_USER")
-		DB_DATABASE := os.Getenv("DB_DATABASE")
-		DB_SSLMODE := os.Getenv("DB_SSLMODE")
-		JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
+		DBHOST := os.Getenv("DB_HOST")
+		DBPORT := os.Getenv("DB_PORT")
+		DBUSER := os.Getenv("DB_USER")
+		DBDATABASE := os.Getenv("DB_DATABASE")
+		DBSSLMODE := os.Getenv("DB_SSLMODE")
+		// JWTSigningKey = os.Getenv("JWT_SIGNING_KEY")
 
-		port, _ := strconv.Atoi(DB_PORT)
+		port, _ := strconv.Atoi(DBPORT)
 
-		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DBHOST, port, DBUSER, DBDATABASE, DBSSLMODE)
 	} else {
 
-		DB_HOST := os.Getenv("DB_HOST")
-		DB_PORT := os.Getenv("DB_PORT")
-		DB_USER := os.Getenv("DB_USER")
-		DB_PASSWORD := os.Getenv("DB_PASSWORD")
-		DB_DATABASE := os.Getenv("DB_DATABASE")
-		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+		DBHOST := os.Getenv("DB_HOST")
+		DBPORT := os.Getenv("DB_PORT")
+		DBUSER := os.Getenv("DB_USER")
+		DBPASSWORD := os.Getenv("DB_PASSWORD")
+		DBDATABASE := os.Getenv("DB_DATABASE")
+		DBSSLMODE := os.Getenv("DB_SSLMODE")
 
-		port, _ := strconv.Atoi(DB_PORT)
+		port, _ := strconv.Atoi(DBPORT)
 
-		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DBHOST, port, DBUSER, DBPASSWORD, DBDATABASE, DBSSLMODE)
 	}
 
 	// Use the InitDB function to initialise the global variable.

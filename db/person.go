@@ -10,9 +10,9 @@ type Person struct {
 	*models.Person
 }
 
-func GetAllPeople() ([]*models.Person, error) {
+func GetAllPeople(id string) ([]*models.Person, error) {
 	people := []*models.Person{}
-	err := conn.Select(&people, "SELECT * FROM people")
+	err := conn.Select(&people, "SELECT * FROM people where user_id = $1", id)
 
 	if err != nil {
 		return nil, err

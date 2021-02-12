@@ -66,8 +66,8 @@ func LoginUser(c *gin.Context) {
 	mySigningKey := []byte(JWT_SIGNING_KEY)
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := jwt.MapClaims{
-		"id":  user.ID,
-		"exp": time.Now().Add(time.Hour * 24 * 5).Unix(),
+		"user_id": user.ID,
+		"exp":     time.Now().Add(time.Hour * 24 * 5).Unix(),
 	}
 	token.Claims = claims
 	// Sign and get the complete encoded token as a string
@@ -77,7 +77,8 @@ func LoginUser(c *gin.Context) {
 	}
 
 	// BY HERE: User is created
-	c.JSON(http.StatusCreated, gin.H{
+	c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", false, true)
+	c.JSON(http.StatusOK, gin.H{
 		"data": tokenString,
 	})
 }
