@@ -3,17 +3,70 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"time"
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
 	"github.com/davecgh/go-spew/spew"
+	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 )
 
+type AppledoreClaims struct {
+	UserID int64 `json:"user_id"`
+	jwt.StandardClaims
+}
+
 // GetPeople .. Returns all People
 func GetPeople(c *gin.Context) {
-	people, err := db.GetAllPeople()
+	cookie, err := c.Request.Cookie("authorized_user")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			// If the cookie is not set, return an unauthorized status
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+		// For any other type of error, return a bad request status
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	tokenString := cookie.Value
+
+	// Parse the JWT string and store the result in `claims`.
+	// Note that we are passing the key in this method as well. This method will return an error
+	// if the token is invalid (if it has expired according to the expiry time we set on sign in),
+	// or if the signature does not match
+	tkn, err := jwt.ParseWithClaims(tokenString, &AppledoreClaims{}, func(token *jwt.Token) (interface{}, error) {
+		secretString := os.Getenv("JWT_SIGNING_KEY")
+		return []byte(secretString), nil
+
+	})
+
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+		c.AbortWithError(http.StatusBadRequest, err)
+		return
+	}
+	if !tkn.Valid {
+		c.AbortWithError(http.StatusUnauthorized, err)
+		return
+	}
+
+	var claims *AppledoreClaims
+	if claims, ok := tkn.Claims.(*AppledoreClaims); ok && tkn.Valid {
+		fmt.Printf("%v %v", claims.UserID, claims.StandardClaims.ExpiresAt)
+	} else {
+		fmt.Println(err)
+	}
+
+	spew.Dump(claims)
+
+	// people, err := db.GetAllPeople(fmt.Sprint(claims.UserID))
+	people, err := db.GetAllPeople("3")
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
@@ -131,7 +184,7 @@ func UpdatePerson(c *gin.Context) {
 		person.DOB = &dob
 	}
 
-	spew.Dump(person)
+	// spew.Dump(person)
 
 	err = db.UpdatePerson(id, person)
 	if err != nil {

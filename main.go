@@ -16,15 +16,22 @@ import (
 	_ "net/http"
 )
 
+// var JWTSigningKey string
+
 func main() {
 	r := gin.Default()
 
-	// Add some middleware for cors
 	config := cors.DefaultConfig()
-	config.AllowOrigins = []string{"*"}
-	// config.AllowOrigins == []string{"http://google.com", "http://facebook.com"}
-
+	config.AllowCredentials = true
+	// config.AllowAllOrigins = true
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "https://lantern.vercel.app"}
+	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
+	config.AllowHeaders = []string{"Content-Type, *"}
 	r.Use(cors.New(config))
+
+	// Add some middleware for cors
+	protected := r.Group("/api/")
+	// protected.Use(cors.New(config))
 
 	// Load ENV Variables
 	ENV := os.Getenv("LANTERN_ENV")
@@ -35,27 +42,28 @@ func main() {
 		if err != nil {
 			log.Fatal("Error loading .env file")
 		}
-		DB_HOST := os.Getenv("DB_HOST")
-		DB_PORT := os.Getenv("DB_PORT")
-		DB_USER := os.Getenv("DB_USER")
-		DB_DATABASE := os.Getenv("DB_DATABASE")
-		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+		DBHOST := os.Getenv("DB_HOST")
+		DBPORT := os.Getenv("DB_PORT")
+		DBUSER := os.Getenv("DB_USER")
+		DBDATABASE := os.Getenv("DB_DATABASE")
+		DBSSLMODE := os.Getenv("DB_SSLMODE")
+		// JWTSigningKey = os.Getenv("JWT_SIGNING_KEY")
 
-		port, _ := strconv.Atoi(DB_PORT)
+		port, _ := strconv.Atoi(DBPORT)
 
-		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s dbname=%s sslmode=%s", DBHOST, port, DBUSER, DBDATABASE, DBSSLMODE)
 	} else {
 
-		DB_HOST := os.Getenv("DB_HOST")
-		DB_PORT := os.Getenv("DB_PORT")
-		DB_USER := os.Getenv("DB_USER")
-		DB_PASSWORD := os.Getenv("DB_PASSWORD")
-		DB_DATABASE := os.Getenv("DB_DATABASE")
-		DB_SSLMODE := os.Getenv("DB_SSLMODE")
+		DBHOST := os.Getenv("DB_HOST")
+		DBPORT := os.Getenv("DB_PORT")
+		DBUSER := os.Getenv("DB_USER")
+		DBPASSWORD := os.Getenv("DB_PASSWORD")
+		DBDATABASE := os.Getenv("DB_DATABASE")
+		DBSSLMODE := os.Getenv("DB_SSLMODE")
 
-		port, _ := strconv.Atoi(DB_PORT)
+		port, _ := strconv.Atoi(DBPORT)
 
-		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DB_HOST, port, DB_USER, DB_PASSWORD, DB_DATABASE, DB_SSLMODE)
+		connectionString = fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=%s", DBHOST, port, DBUSER, DBPASSWORD, DBDATABASE, DBSSLMODE)
 	}
 
 	// Use the InitDB function to initialise the global variable.
@@ -64,20 +72,28 @@ func main() {
 		log.Fatal(err)
 	}
 
+	// Auth
+	protected.POST("/auth/signup", handlers.SignupUser)
+	protected.POST("/auth/login", handlers.LoginUser)
+
 	// Routes
-	r.GET("/people", handlers.GetPeople)
-	r.POST("/people", handlers.CreatePerson)
-	r.GET("/people/:id", handlers.ShowPerson)
-	r.PUT("/people/:id", handlers.UpdatePerson)
-	r.DELETE("/people/:id", handlers.DeletePerson)
+	protected.GET("/people", handlers.GetPeople)
+	protected.POST("/people", handlers.CreatePerson)
+	protected.GET("/people/:id", handlers.ShowPerson)
+	protected.PUT("/people/:id", handlers.UpdatePerson)
+	protected.DELETE("/people/:id", handlers.DeletePerson)
 
 	// Notes
-	r.POST("/notes/:person_id", handlers.CreateNote)
-	r.DELETE("/notes/:id", handlers.DeleteNote)
+	protected.POST("/notes/:person_id", handlers.CreateNote)
+	protected.DELETE("/notes/:id", handlers.DeleteNote)
 
 	// Pressure Points
-	r.POST("/pressure-points/:person_id", handlers.CreatePressurePoint)
-	r.DELETE("/pressure-points/:id", handlers.DeletePressurePoint)
+	protected.POST("/pressure-points/:person_id", handlers.CreatePressurePoint)
+	protected.DELETE("/pressure-points/:id", handlers.DeletePressurePoint)
+
+	// Users
+	// r.POST("/users", handlers.CreateUser)
+	// r.DELETE("/notes/:id", handlers.DeleteNote)
 
 	// Run
 	r.Run() // listen and serve on localhost:8080
