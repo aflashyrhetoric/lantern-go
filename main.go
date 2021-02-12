@@ -24,7 +24,7 @@ func main() {
 	config := cors.DefaultConfig()
 	config.AllowCredentials = true
 	// config.AllowAllOrigins = true
-	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080"}
+	config.AllowOrigins = []string{"http://localhost:3000", "http://localhost:8080", "https://lantern.vercel.app"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
 	r.Use(cors.New(config))
