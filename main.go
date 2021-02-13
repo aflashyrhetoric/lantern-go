@@ -8,15 +8,64 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/handlers"
+	"github.com/dgrijalva/jwt-go"
 	"github.com/joho/godotenv"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 
+	"net/http"
 	_ "net/http"
 )
 
-// var JWTSigningKey string
+type AppClaims struct {
+	UserID int64 `json:"user_id"`
+	jwt.StandardClaims
+}
+
+func Logger() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		cookie, err := c.Request.Cookie("authorized_user")
+		if err != nil {
+			if err == http.ErrNoCookie {
+				// If the cookie is not set, return an unauthorized status
+				c.Next()
+				// c.AbortWithError(http.StatusUnauthorized, err)
+				return
+			}
+			// For any other type of error, return a bad request status
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		tokenString := cookie.Value
+
+		// Parse the JWT string and store the result in `claims`.
+		// Note that we are passing the key in this method as well. This method will return an error
+		// if the token is invalid (if it has expired according to the expiry time we set on sign in),
+		// or if the signature does not match
+		tkn, err := jwt.ParseWithClaims(tokenString, &AppClaims{}, func(token *jwt.Token) (interface{}, error) {
+			secretString := os.Getenv("JWT_SIGNING_KEY")
+			return []byte(secretString), nil
+		})
+
+		if err != nil {
+			if err == jwt.ErrSignatureInvalid {
+				c.AbortWithError(http.StatusUnauthorized, err)
+				return
+			}
+			c.AbortWithError(http.StatusBadRequest, err)
+			return
+		}
+		if !tkn.Valid {
+			c.AbortWithError(http.StatusUnauthorized, err)
+			return
+		}
+
+		claims := tkn.Claims.(*AppClaims)
+		c.Set("user_id", claims.UserID)
+		c.Next()
+	}
+}
 
 func main() {
 	r := gin.Default()
@@ -27,6 +76,7 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app", "https://staging-lantern.vercel.app"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
+	r.Use(Logger())
 	r.Use(cors.New(config))
 
 	// Add some middleware for cors
