@@ -7,6 +7,7 @@ import (
 
 	"github.com/aflashyrhetoric/lantern-go/db"
 	"github.com/aflashyrhetoric/lantern-go/models"
+	"github.com/davecgh/go-spew/spew"
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -76,8 +77,16 @@ func LoginUser(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	c.SetSameSite(http.SameSiteNoneMode)
-	c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", true, true)
+	ENV := os.Getenv("LANTERN_ENV")
+	spew.Dump(ENV)
+
+	if ENV == "development" {
+		c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", false, true)
+	} else {
+		c.SetSameSite(http.SameSiteNoneMode)
+		c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", true, true)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
 		"data": tokenString,
 	})
