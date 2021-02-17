@@ -14,7 +14,7 @@ import (
 func GetPeople(c *gin.Context) {
 	userIDInterface, exists := c.Get("user_id")
 	if !exists {
-		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("authorized_user is not valid in context"))
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("user_id is not valid in context"))
 	}
 	userID := fmt.Sprint(userIDInterface)
 

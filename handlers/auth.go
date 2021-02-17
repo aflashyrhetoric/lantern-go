@@ -76,8 +76,8 @@ func LoginUser(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
-	// BY HERE: User is created
-	c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", false, true)
+	c.SetSameSite(http.SameSiteNoneMode)
+	c.SetCookie("authorized_user", tokenString, int(time.Second)*60*24*5, "/", "", true, true)
 	c.JSON(http.StatusOK, gin.H{
 		"data": tokenString,
 	})

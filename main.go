@@ -67,13 +67,15 @@ func Logger() gin.HandlerFunc {
 	}
 }
 
+var ENV string
+
 func main() {
 	r := gin.Default()
 
 	config := cors.DefaultConfig()
 	config.AllowCredentials = true
 	// config.AllowAllOrigins = true
-	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app", "https://staging-lantern.vercel.app"}
+	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app/appledore", "https://staging-lantern.vercel.app/appledore"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
 	r.Use(Logger())
@@ -84,7 +86,7 @@ func main() {
 	// protected.Use(cors.New(config))
 
 	// Load ENV Variables
-	ENV := os.Getenv("LANTERN_ENV")
+	ENV = os.Getenv("LANTERN_ENV")
 	var connectionString string
 
 	if ENV == "development" {
