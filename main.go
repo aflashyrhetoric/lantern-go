@@ -75,7 +75,7 @@ func main() {
 	config := cors.DefaultConfig()
 	config.AllowCredentials = true
 	// config.AllowAllOrigins = true
-	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app/appledore", "https://staging-lantern.vercel.app/appledore"}
+	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app", "https://staging-lantern.vercel.app/appledore"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
 	r.Use(Logger())
