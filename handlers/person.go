@@ -46,7 +46,13 @@ func CreatePerson(c *gin.Context) {
 		err error
 	)
 
-	dbModel := &models.PersonRequest{}
+	userIDInterface, exists := c.Get("user_id")
+	if !exists {
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("user_id is not valid in context"))
+	}
+	userID := userIDInterface.(int64)
+
+	dbModel := &models.CreatePersonRequest{}
 	err = c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
@@ -60,6 +66,7 @@ func CreatePerson(c *gin.Context) {
 			Mobile:    dbModel.Mobile,
 			Email:     dbModel.Email,
 			Address:   dbModel.Address,
+			UserID:    userID,
 		},
 	}
 
@@ -97,7 +104,7 @@ func UpdatePerson(c *gin.Context) {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
 	}
 
-	dbModel := &models.PersonRequest{}
+	dbModel := &models.UpdatePersonRequest{}
 	err = c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not bind the values to JSON for person %v", err))
