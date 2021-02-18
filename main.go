@@ -23,7 +23,7 @@ type AppClaims struct {
 	jwt.StandardClaims
 }
 
-func Logger() gin.HandlerFunc {
+func Authenticate() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		cookie, err := c.Request.Cookie("authorized_user")
 		if err != nil {
@@ -38,6 +38,11 @@ func Logger() gin.HandlerFunc {
 			return
 		}
 		tokenString := cookie.Value
+
+		if tokenString == "nil" {
+			c.Next()
+			return
+		}
 
 		// Parse the JWT string and store the result in `claims`.
 		// Note that we are passing the key in this method as well. This method will return an error
@@ -63,7 +68,6 @@ func Logger() gin.HandlerFunc {
 
 		claims := tkn.Claims.(*AppClaims)
 		c.Set("user_id", claims.UserID)
-		c.Next()
 	}
 }
 
@@ -78,7 +82,7 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app", "https://staging-lantern.vercel.app/appledore"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
-	r.Use(Logger())
+	r.Use(Authenticate())
 	r.Use(cors.New(config))
 
 	// Add some middleware for cors
@@ -127,6 +131,7 @@ func main() {
 	// Auth
 	protected.POST("/auth/signup", handlers.SignupUser)
 	protected.POST("/auth/login", handlers.LoginUser)
+	protected.POST("/auth/logout", handlers.Logout) // Keep as POST, so that browser pre-fetching does not invalidate our sesssion
 
 	// Routes
 	protected.GET("/people", handlers.GetPeople)
