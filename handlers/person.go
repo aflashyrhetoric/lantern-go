@@ -29,10 +29,22 @@ func GetPeople(c *gin.Context) {
 }
 
 func ShowPerson(c *gin.Context) {
+	userIDInterface, exists := c.Get("user_id")
+	if !exists {
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("user_id is not valid in context"))
+	}
+
+	// userID := fmt.Sprint(userIDInterface)
+	userID := userIDInterface.(int64)
+
 	id := c.Param("id")
 	person, err := db.GetPerson(id)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
+	if person.UserID != userID {
+		c.AbortWithError(http.StatusForbidden, fmt.Errorf("user tried to access a page to which they do not have permission - go away"))
 	}
 
 	c.JSON(http.StatusOK, gin.H{
