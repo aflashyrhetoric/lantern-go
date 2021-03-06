@@ -82,11 +82,11 @@ func main() {
 	config.AllowOrigins = []string{"http://localhost:3000", "https://lantern.vercel.app", "https://staging-lantern.vercel.app/appledore"}
 	config.AllowMethods = []string{"GET", "POST", "PUT", "DELETE"}
 	config.AllowHeaders = []string{"Content-Type, *"}
-	r.Use(Authenticate())
 	r.Use(cors.New(config))
 
 	// Add some middleware for cors
 	protected := r.Group("/api/")
+	protected.Use(Authenticate())
 	// protected.Use(cors.New(config))
 
 	// Load ENV Variables
@@ -129,9 +129,9 @@ func main() {
 	}
 
 	// Auth
-	protected.POST("/auth/signup", handlers.SignupUser)
-	protected.POST("/auth/login", handlers.LoginUser)
-	protected.POST("/auth/logout", handlers.Logout) // Keep as POST, so that browser pre-fetching does not invalidate our sesssion
+	r.POST("/api/auth/signup", handlers.SignupUser)
+	r.POST("/api/auth/login", handlers.LoginUser)
+	r.POST("/api/auth/logout", handlers.Logout) // Keep as POST, so that browser pre-fetching does not invalidate our sesssion
 
 	// Routes
 	protected.GET("/people", handlers.GetPeople)
