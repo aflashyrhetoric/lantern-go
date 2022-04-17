@@ -128,18 +128,18 @@ func UpdatePerson(c *gin.Context) {
 	if dbModel.LastName != "" {
 		person.LastName = dbModel.LastName
 	}
-	if dbModel.Career != "" {
-		person.Career = dbModel.Career
-	}
-	if dbModel.Mobile != "" {
-		person.Mobile = dbModel.Mobile
-	}
-	if dbModel.Email != "" {
-		person.Email = dbModel.Email
-	}
-	if dbModel.Address != "" {
-		person.Address = dbModel.Address
-	}
+	// if dbModel.Career != "" {
+	person.Career = dbModel.Career
+	// }
+	// if dbModel.Mobile != "" {
+	person.Mobile = dbModel.Mobile
+	// }
+	// if dbModel.Email != "" {
+	person.Email = dbModel.Email
+	// }
+	// if dbModel.Address != "" {
+	person.Address = dbModel.Address
+	// }
 
 	var dob time.Time
 	if dbModel.DOB != nil {
