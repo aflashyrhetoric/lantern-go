@@ -15,8 +15,9 @@ type Person struct {
 	DOB       *time.Time `db:"dob" json:"dob,omitempty"`
 	UserID    int64      `db:"user_id" json:"user_id,omitempty"`
 
-	Notes          []Note          `json:"notes,omitempty"`
-	PressurePoints []PressurePoint `json:"pressure_points,omitempty"`
+	Notes          []Note                 `json:"notes,omitempty"`
+	PressurePoints []PressurePoint        `json:"pressure_points,omitempty"`
+	Relationships  []RelationshipHydrated `json:"relationships,omitempty"`
 }
 
 type CreatePersonRequest struct {

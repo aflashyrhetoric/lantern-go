@@ -51,13 +51,13 @@ func (n PressurePoint) Validate() (bool, []string) {
 	return len(invalidFields) == 0, invalidFields
 }
 
-func CreatePressurePoint(n *PressurePoint) error {
-	valid, fields := n.Validate()
+func CreatePressurePoint(r *PressurePoint) error {
+	valid, fields := r.Validate()
 
 	if !valid {
-		return fmt.Errorf("Following parameters to the CreatePressurePoint func was not provided: %v", fields)
+		return fmt.Errorf("following parameters to the CreatePressurePoint func was not provided: %v", fields)
 	}
-	_, err := conn.NamedExec("INSERT into pressure_points (description, person_id) VALUES (:description, :person_id)", &n)
+	_, err := conn.NamedExec("INSERT into pressure_points (description, person_id) VALUES (:description, :person_id)", &r)
 	if err != nil {
 		return err
 	}

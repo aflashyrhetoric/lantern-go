@@ -1,5 +1,5 @@
-DROP TABLE "pressure_points";
-DROP TABLE "notes";
-DROP TABLE "relationship";
-DROP TABLE "people";
-DROP TABLE "users";
+DROP TABLE IF EXISTS "pressure_points";
+DROP TABLE IF EXISTS "notes";
+DROP TABLE IF EXISTS "relationships";
+DROP TABLE IF EXISTS "people";
+DROP TABLE IF EXISTS "users";

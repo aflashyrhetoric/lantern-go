@@ -10,7 +10,7 @@ type Person struct {
 	*models.Person
 }
 
-func GetAllPeople(id string) ([]*models.Person, error) {
+func GetAllPeople(id int64) ([]*models.Person, error) {
 	people := []*models.Person{}
 	err := conn.Select(&people, "SELECT * FROM people where user_id = $1", id)
 
@@ -21,9 +21,12 @@ func GetAllPeople(id string) ([]*models.Person, error) {
 	return people, nil
 }
 
-func GetPerson(id string) (*models.Person, error) {
+func GetPerson(id string, userID int64) (*models.Person, error) {
 	person := models.Person{}
 	err := conn.Get(&person, "SELECT * FROM people WHERE id = $1", id)
+	if err != nil {
+		return nil, err
+	}
 
 	// notes := []models.Note{}
 	// err = conn.Select(&notes, "SELECT id, text FROM notes WHERE person_id = $1", id)
@@ -39,12 +42,14 @@ func GetPerson(id string) (*models.Person, error) {
 		return nil, err
 	}
 
-	person.Notes = notes
-	person.PressurePoints = points
-
+	relationships, err := GetRelationshipsForPerson(id, userID)
 	if err != nil {
 		return nil, err
 	}
+
+	person.Notes = notes
+	person.PressurePoints = points
+	person.Relationships = relationships
 
 	return &person, nil
 }
