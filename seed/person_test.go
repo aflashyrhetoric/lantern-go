@@ -16,7 +16,7 @@ func randomCareer() string {
 	return utils.RandomStringFromList([]string{"developer", "slp", "teacher", "singer"})
 }
 
-var PersonCount int = 10
+var PersonCount int = 21
 
 func TestSeedPeople(t *testing.T) {
 
@@ -43,6 +43,7 @@ func TestSeedPeople(t *testing.T) {
 			panic(err)
 		}
 		a.DOB = &birthday
+		a.UserID = int64(utils.RandomNum(PersonCount))
 
 		if err != nil {
 			panic(err)

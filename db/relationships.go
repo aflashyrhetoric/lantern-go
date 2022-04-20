@@ -30,6 +30,10 @@ func GetRelationshipsForPerson(id string, userID int64) ([]models.RelationshipHy
 
 	reorientedWithPersonAsPersonOne := []models.Relationship{}
 	relationshipsHydrated := []models.RelationshipHydrated{}
+	if len(relationships) == 0 {
+		return relationshipsHydrated, nil
+	}
+
 	if len(relationships) > 0 {
 		people, err := GetAllPeople(userID)
 		if err != nil {

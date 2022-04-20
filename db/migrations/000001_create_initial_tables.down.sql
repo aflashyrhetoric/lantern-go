@@ -1,5 +1,5 @@
 DROP TABLE IF EXISTS "pressure_points";
 DROP TABLE IF EXISTS "notes";
-DROP TABLE IF EXISTS "relationships";
+DROP TABLE IF EXISTS "relationship";
 DROP TABLE IF EXISTS "people";
 DROP TABLE IF EXISTS "users";

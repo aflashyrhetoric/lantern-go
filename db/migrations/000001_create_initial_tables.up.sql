@@ -29,7 +29,7 @@ CREATE TABLE "notes" (
   "text" text
 );
 
-CREATE TABLE "relationships" (
+CREATE TABLE "relationship" (
   "id" SERIAL PRIMARY KEY,
   "person_one_id" int,
   "person_two_id" int,
@@ -42,6 +42,6 @@ ALTER TABLE "pressure_points" ADD FOREIGN KEY ("person_id") REFERENCES "people" 
 
 ALTER TABLE "notes" ADD FOREIGN KEY ("person_id") REFERENCES "people" ("id");
 
-ALTER TABLE "relationships" ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
+ALTER TABLE "relationship" ADD FOREIGN KEY ("person_one_id") REFERENCES "people" ("id");
 
-ALTER TABLE "relationships" ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");
+ALTER TABLE "relationship" ADD FOREIGN KEY ("person_two_id") REFERENCES "people" ("id");
