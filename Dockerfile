@@ -29,7 +29,7 @@ ENV DB_DATABASE=$DB_DATABASE
 ENV DB_SSLMODE=$DB_SSLMODE
 ENV GIN_MODE=$GIN_MODE
 
-RUN go build -mod=vendor -o bin/lantern
+RUN go build -o bin/lantern
 EXPOSE 8080
 
 # -- Stage 2 -- #
