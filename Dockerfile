@@ -37,13 +37,12 @@ EXPOSE 8080
 FROM debian:buster-slim
 # Install any required dependencies.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  ca-certificates apt-transport-https gnupg curl procps tzdata lsb-core && \
+  ca-certificates apt-transport-https gnupg curl procps tzdata && \
   apt-get clean all
 
-RUN curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add - && \
-  echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list && \
-  apt-get update && \
-  apt-get install -y migrate
+RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-arm64.tar.gz | tar xvz
+RUN mv migrate.linux-amd64 usr/local/bin/migrate
+
 
 # WORKDIR /root/
 # Copy the binary from the builder stage and set it as the default command.
