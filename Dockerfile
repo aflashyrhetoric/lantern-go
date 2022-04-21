@@ -37,7 +37,7 @@ EXPOSE 8080
 FROM debian:buster-slim
 # Install any required dependencies.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  ca-certificates apt-transport-https gnupg curl procps tzdata && \
+  ca-certificates apt-transport-https gnupg curl make procps tzdata && \
   apt-get clean all
 
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
