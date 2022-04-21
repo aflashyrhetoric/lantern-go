@@ -41,7 +41,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   apt-get clean all
 
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
-RUN mv migrate.linux-amd64 usr/local/bin/migrate
+RUN mv ./migrate usr/local/bin/migrate
 
 
 # WORKDIR /root/
