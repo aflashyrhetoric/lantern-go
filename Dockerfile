@@ -37,7 +37,7 @@ EXPOSE 8080
 FROM debian:buster-slim
 # Install any required dependencies.
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
-  ca-certificates gnupg curl procps tzdata && \
+  ca-certificates apt-transport-https gnupg curl procps tzdata && \
   rm -rf /var/lib/apt/lists/*
 
 RUN curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add - && \
