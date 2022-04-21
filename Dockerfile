@@ -34,9 +34,14 @@ EXPOSE 8080
 
 # -- Stage 2 -- #
 # Create the final environment with the compiled binary.
-FROM alpine
+FROM debian:buster-slim
 # Install any required dependencies.
-RUN apk --no-cache add ca-certificates libc6-compat
+RUN apt install --no-cache add ca-certificates
+
+RUN curl -L https://packagecloud.io/golang-migrate/migrate/gpgkey | apt-key add - && \
+  echo "deb https://packagecloud.io/golang-migrate/migrate/ubuntu/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/migrate.list && \
+  apt update && \
+  apt install -y migrate
 
 # WORKDIR /root/
 # Copy the binary from the builder stage and set it as the default command.
