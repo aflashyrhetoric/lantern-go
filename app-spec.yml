@@ -1,0 +1,7 @@
+name: lantern-go
+services:
+- name: web
+  git:
+    repo_clone_url: https://github.com/aflashyrhetoric/lantern-go/Dockerfile.git
+    branch: main
+  dockerfile_path: Dockerfile
