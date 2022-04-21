@@ -7,7 +7,8 @@ services:
   github:
     branch: deploy
     deploy_on_push: true
-    repo: aflashyrhetoric/lantern-go  dockerfile_path: Dockerfile
+    repo: aflashyrhetoric/lantern-go
+ dockerfile_path: Dockerfile
 envs:
 - key: LANTERN_ENV
   scope: RUN_AND_BUILD_TIME
