@@ -41,3 +41,4 @@ WORKDIR /root/
 # Copy the binary from the builder stage and set it as the default command.
 COPY --from=builder /app/bin/lantern /usr/local/bin/
 CMD ["lantern"]
+RUN ls /usr/local/bin
