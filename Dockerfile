@@ -40,7 +40,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
   ca-certificates apt-transport-https gnupg curl procps tzdata && \
   apt-get clean all
 
-RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-arm64.tar.gz | tar xvz
+RUN curl -O -L https://github.com/golang-migrate/migrate/releases/download/v4.15.1/migrate.linux-amd64.tar.gz | tar xvz
 RUN mv migrate.linux-amd64 usr/local/bin/migrate
 
 
