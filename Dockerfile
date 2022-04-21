@@ -29,16 +29,16 @@ ENV DB_DATABASE=$DB_DATABASE
 ENV DB_SSLMODE=$DB_SSLMODE
 ENV GIN_MODE=$GIN_MODE
 
-RUN go build -o bin/lantern
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o bin/lantern
 EXPOSE 8080
 
 # -- Stage 2 -- #
 # Create the final environment with the compiled binary.
 FROM alpine
 # Install any required dependencies.
-RUN apk --no-cache add ca-certificates
-WORKDIR /root/
+RUN apk --no-cache add ca-certificates libc6-compat
+
+# WORKDIR /root/
 # Copy the binary from the builder stage and set it as the default command.
 COPY --from=builder /app/bin/lantern /usr/local/bin/
 CMD ["lantern"]
-RUN ls /usr/local/bin
