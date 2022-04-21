@@ -4,11 +4,11 @@ services:
   git:
     repo_clone_url: https://github.com/aflashyrhetoric/lantern-go.git
     branch: main
+  dockerfile_path: Dockerfile
   github:
     branch: deploy
     deploy_on_push: true
     repo: aflashyrhetoric/lantern-go
- dockerfile_path: Dockerfile
 envs:
 - key: LANTERN_ENV
   scope: RUN_AND_BUILD_TIME
