@@ -1,0 +1,48 @@
+# THIS IS ARCHIVED AND JUST FOR REFERENCE
+databases:
+- engine: PG
+  name: lantern-go
+  num_nodes: 1
+  size: db-s-dev-database
+  version: "12"
+name: lantern-go
+region: nyc
+services:
+- build_command: go build
+  environment_slug: go
+  envs:
+  - key: LANTERN_ENV
+    scope: RUN_AND_BUILD_TIME
+    value: production
+  - key: DB_HOST
+    scope: RUN_AND_BUILD_TIME
+    value: app-b0fe15ae-c979-4814-8b96-92a73a438a03-do-user-1026887-0.b.db.ondigitalocean.com
+  - key: DB_PORT
+    scope: RUN_AND_BUILD_TIME
+    value: "25060"
+  - key: DB_USER
+    scope: RUN_AND_BUILD_TIME
+    value: lantern-go
+  - key: DB_PASSWORD
+    scope: RUN_AND_BUILD_TIME
+    value: jy8jyuvw7nca1dzk
+  - key: DB_DATABASE
+    scope: RUN_AND_BUILD_TIME
+    value: lantern-go
+  - key: DB_SSLMODE
+    scope: RUN_AND_BUILD_TIME
+    value: require
+  - key: GIN_MODE
+    scope: RUN_AND_BUILD_TIME
+    value: release
+  github:
+    branch: deploy
+    deploy_on_push: true
+    repo: aflashyrhetoric/lantern-go
+  http_port: 8080
+  instance_count: 1
+  instance_size_slug: basic-xxs
+  name: lantern-go
+  routes:
+  - path: /
+  run_command: ./lantern-go
