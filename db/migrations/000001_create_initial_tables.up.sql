@@ -1,11 +1,11 @@
-CREATE TABLE "users" (
+CREATE TABLE "users" if not exists (
   "id" SERIAL PRIMARY KEY,
   "email" text UNIQUE,
   "password" text NOT NULL,
   "created_at" timestamp
 );
 
-CREATE TABLE "people" (
+CREATE TABLE "people" if not exists (
   "id" SERIAL PRIMARY KEY,
   "first_name" text,
   "last_name" text,
@@ -17,19 +17,19 @@ CREATE TABLE "people" (
   "user_id" int
 );
 
-CREATE TABLE "pressure_points" (
+CREATE TABLE "pressure_points" if not exists (
   "id" SERIAL PRIMARY KEY,
   "person_id" int,
   "description" text
 );
 
-CREATE TABLE "notes" (
+CREATE TABLE "notes" if not exists (
   "id" SERIAL PRIMARY KEY,
   "person_id" int,
   "text" text
 );
 
-CREATE TABLE "relationship" (
+CREATE TABLE "relationship" if not exists (
   "id" SERIAL PRIMARY KEY,
   "person_one_id" int,
   "person_two_id" int,
