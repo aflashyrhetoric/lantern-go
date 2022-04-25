@@ -15,12 +15,11 @@ const (
 
 	Rival RelationshipType = "rival"
 	Enemy RelationshipType = "enemy"
-	
-  // Aunt RelationshipType = "aunt"
+
+	// Aunt RelationshipType = "aunt"
 	// Uncle RelationshipType = "uncle"
 )
-	 
-	
+
 type Relationship struct {
 	ID               int              `db:"id" json:"id"`
 	PersonOneID      int              `db:"person_one_id" json:"person_one_id,omitempty"`

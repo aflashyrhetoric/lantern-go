@@ -15,8 +15,8 @@ type Person struct {
 	DOB       *time.Time `db:"dob" json:"dob,omitempty"`
 	UserID    int64      `db:"user_id" json:"user_id,omitempty"`
 
-	RelationshipToUser              RelationshipType `db:"" json:"relationship_to_user"`
-	RelationshipToUserThroughPerson int              `db:"" json:"relationship_to_user_through_person"`
+	RelationshipToUser              NullString `db:"relationship_to_user" json:"relationship_to_user,omitempty"`
+	RelationshipToUserThroughPerson NullInt64  `db:"relationship_to_user_through_person_id" json:"relationship_to_user_through_person_id,omitempty"`
 
 	Notes          []Note                 `json:"notes"`
 	PressurePoints []PressurePoint        `json:"pressure_points"`
@@ -24,25 +24,25 @@ type Person struct {
 }
 
 type CreatePersonRequest struct {
-	FirstName                       string           `db:"first_name" json:"first_name"`
-	LastName                        string           `db:"last_name" json:"last_name"`
-	Career                          string           `db:"career" json:"career"`
-	Mobile                          string           `db:"mobile" json:"mobile"`
-	Email                           string           `db:"email" json:"email"`
-	Address                         string           `db:"address" json:"address"`
-	DOB                             *string          `db:"dob" json:"dob"`
-	RelationshipToUser              RelationshipType `db:"" json:"relationship_to_user"`
-	RelationshipToUserThroughPerson int              `db:"" json:"relationship_to_user_through_person"`
+	FirstName                       string     `json:"first_name"`
+	LastName                        string     `json:"last_name"`
+	Career                          string     `json:"career"`
+	Mobile                          string     `json:"mobile"`
+	Email                           string     `json:"email"`
+	Address                         string     `json:"address"`
+	DOB                             *string    `json:"dob"`
+	RelationshipToUser              NullString `json:"relationship_to_user,omitempty"`
+	RelationshipToUserThroughPerson NullInt64  `json:"relationship_to_user_through_person_id,omitempty"`
 }
 
 type UpdatePersonRequest struct {
-	FirstName                       string           `db:"first_name" json:"first_name"`
-	LastName                        string           `db:"last_name" json:"last_name"`
-	Career                          string           `db:"career" json:"career"`
-	Mobile                          string           `db:"mobile" json:"mobile"`
-	Email                           string           `db:"email" json:"email"`
-	Address                         string           `db:"address" json:"address"`
-	DOB                             *string          `db:"dob" json:"dob"`
-	RelationshipToUser              RelationshipType `db:"" json:"relationship_to_user"`
-	RelationshipToUserThroughPerson int              `db:"" json:"relationship_to_user_through_person"`
+	FirstName                       string     `json:"first_name"`
+	LastName                        string     `json:"last_name"`
+	Career                          string     `json:"career"`
+	Mobile                          string     `json:"mobile"`
+	Email                           string     `json:"email"`
+	Address                         string     `json:"address"`
+	DOB                             *string    `json:"dob"`
+	RelationshipToUser              NullString `json:"relationship_to_user,omitempty"`
+	RelationshipToUserThroughPerson NullInt64  `json:"relationship_to_user_through_person_id,omitempty"`
 }

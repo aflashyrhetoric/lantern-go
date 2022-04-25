@@ -91,7 +91,7 @@ func CreatePerson(p *Person) error {
 	}
 
 	// Save the person, returning ID
-	_, err = tx.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob, user_id) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob, :user_id, :relationship_to_user) returning id", &p)
+	_, err = tx.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob, relationship_to_user, relationship_to_user_through_person_id, user_id) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob, :relationship_to_user, :relationship_to_user_through_person_id, :user_id) returning id", &p)
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func CreatePerson(p *Person) error {
 }
 
 func UpdatePerson(id string, p *models.Person) error {
-	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob WHERE id=:id", p)
+	_, err := conn.NamedExec("UPDATE people SET first_name=:first_name, last_name=:last_name, career=:career, mobile=:mobile, email=:email, address=:address, dob=:dob, relationship_to_user=:relationship_to_user, relationship_to_user_through_person_id=:relationship_to_user_through_person_id WHERE id=:id", p)
 	if err != nil {
 		return err
 	}

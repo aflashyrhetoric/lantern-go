@@ -43,8 +43,8 @@ func ShowPerson(c *gin.Context) {
 	// userID := fmt.Sprint(userIDInterface)
 	userID := userIDInterface.(int64)
 
-	id := c.Param("id")
-	person, err := db.GetPerson(id, userID)
+	personID := c.Param("id")
+	person, err := db.GetPerson(personID, userID)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
@@ -80,27 +80,26 @@ func CreatePerson(c *gin.Context) {
 	}
 	userID := userIDInterface.(int64)
 
-	dbModel := &models.CreatePersonRequest{}
-	err = c.BindJSON(&dbModel)
+	createPersonRequest := &models.CreatePersonRequest{}
+	err = c.BindJSON(&createPersonRequest)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
 	}
 
 	person := db.Person{
 		Person: &models.Person{
-			FirstName:          dbModel.FirstName,
-			LastName:           dbModel.LastName,
-			Career:             dbModel.Career,
-			Mobile:             dbModel.Mobile,
-			Email:              dbModel.Email,
-			Address:            dbModel.Address,
-			UserID:             userID,
-			RelationshipToUser: dbModel.RelationshipToUser,
+			FirstName: createPersonRequest.FirstName,
+			LastName:  createPersonRequest.LastName,
+			Career:    createPersonRequest.Career,
+			Mobile:    createPersonRequest.Mobile,
+			Email:     createPersonRequest.Email,
+			Address:   createPersonRequest.Address,
+			UserID:    userID,
 		},
 	}
 
-	if dbModel.DOB != nil {
-		dob, err = time.Parse("2006-01-02", *dbModel.DOB)
+	if createPersonRequest.DOB != nil {
+		dob, err = time.Parse("2006-01-02", *createPersonRequest.DOB)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
 		}
@@ -110,6 +109,14 @@ func CreatePerson(c *gin.Context) {
 		} else {
 			person.DOB = &dob
 		}
+	}
+
+	if createPersonRequest.RelationshipToUser.Valid {
+		person.RelationshipToUser = createPersonRequest.RelationshipToUser
+	}
+
+	if createPersonRequest.RelationshipToUserThroughPerson.Valid {
+		person.RelationshipToUserThroughPerson = createPersonRequest.RelationshipToUserThroughPerson
 	}
 
 	err = db.CreatePerson(&person)
@@ -159,10 +166,12 @@ func UpdatePerson(c *gin.Context) {
 	// }
 
 	person.RelationshipToUser = updatePersonReq.RelationshipToUser
+	person.RelationshipToUserThroughPerson = updatePersonReq.RelationshipToUserThroughPerson
+	// fmt.Println(updatePersonReq.RelationshipToUser)
 
-	if updatePersonReq.RelationshipToUserThroughPerson != 0 && updatePersonReq.RelationshipToUser != "" {
-		person.RelationshipToUserThroughPerson = updatePersonReq.RelationshipToUserThroughPerson
-	}
+	// if updatePersonReq.RelationshipToUserThroughPerson != nil && updatePersonReq.RelationshipToUser != nil {
+	// 	person.RelationshipToUserThroughPerson = *updatePersonReq.RelationshipToUserThroughPerson
+	// }
 
 	var dob time.Time
 	if updatePersonReq.DOB != nil {
