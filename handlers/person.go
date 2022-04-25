@@ -10,6 +10,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+type PersonPageResponse struct {
+	Person   *models.Person  `json:"person"`
+	UserData models.UserData `json:"user_data"`
+}
+
 // GetPeople .. Returns all People
 func GetPeople(c *gin.Context) {
 	userIDInterface, exists := c.Get("user_id")
@@ -48,8 +53,18 @@ func ShowPerson(c *gin.Context) {
 		c.AbortWithError(http.StatusForbidden, fmt.Errorf("user %d tried to access user %d to which they do not have permission - go away", person.UserID, userID))
 	}
 
+	people, err := db.GetAllPeople(userID)
+	if err != nil {
+		c.AbortWithError(http.StatusInternalServerError, err)
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"data": &person,
+		"data": PersonPageResponse{
+			Person: person,
+			UserData: models.UserData{
+				People: people,
+			},
+		},
 	})
 }
 
@@ -73,13 +88,14 @@ func CreatePerson(c *gin.Context) {
 
 	person := db.Person{
 		Person: &models.Person{
-			FirstName: dbModel.FirstName,
-			LastName:  dbModel.LastName,
-			Career:    dbModel.Career,
-			Mobile:    dbModel.Mobile,
-			Email:     dbModel.Email,
-			Address:   dbModel.Address,
-			UserID:    userID,
+			FirstName:          dbModel.FirstName,
+			LastName:           dbModel.LastName,
+			Career:             dbModel.Career,
+			Mobile:             dbModel.Mobile,
+			Email:              dbModel.Email,
+			Address:            dbModel.Address,
+			UserID:             userID,
+			RelationshipToUser: dbModel.RelationshipToUser,
 		},
 	}
 
@@ -114,37 +130,43 @@ func UpdatePerson(c *gin.Context) {
 
 	person, err := db.GetPersonalData(id)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("Could not find user with id %s", id))
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not find user with id %s", id))
 	}
 
-	dbModel := &models.UpdatePersonRequest{}
-	err = c.BindJSON(&dbModel)
+	updatePersonReq := &models.UpdatePersonRequest{}
+	err = c.BindJSON(&updatePersonReq)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not bind the values to JSON for person %v", err))
 	}
 
-	if dbModel.FirstName != "" {
-		person.FirstName = dbModel.FirstName
+	if updatePersonReq.FirstName != "" {
+		person.FirstName = updatePersonReq.FirstName
 	}
-	if dbModel.LastName != "" {
-		person.LastName = dbModel.LastName
+	if updatePersonReq.LastName != "" {
+		person.LastName = updatePersonReq.LastName
 	}
-	// if dbModel.Career != "" {
-	person.Career = dbModel.Career
+	// if updatePersonReq.Career != "" {
+	person.Career = updatePersonReq.Career
 	// }
-	// if dbModel.Mobile != "" {
-	person.Mobile = dbModel.Mobile
+	// if updatePersonReq.Mobile != "" {
+	person.Mobile = updatePersonReq.Mobile
 	// }
-	// if dbModel.Email != "" {
-	person.Email = dbModel.Email
+	// if updatePersonReq.Email != "" {
+	person.Email = updatePersonReq.Email
 	// }
-	// if dbModel.Address != "" {
-	person.Address = dbModel.Address
+	// if updatePersonReq.Address != "" {
+	person.Address = updatePersonReq.Address
 	// }
 
+	person.RelationshipToUser = updatePersonReq.RelationshipToUser
+
+	if updatePersonReq.RelationshipToUserThroughPerson != 0 && updatePersonReq.RelationshipToUser != "" {
+		person.RelationshipToUserThroughPerson = updatePersonReq.RelationshipToUserThroughPerson
+	}
+
 	var dob time.Time
-	if dbModel.DOB != nil {
-		dob, err = time.Parse("2006-01-02", *dbModel.DOB)
+	if updatePersonReq.DOB != nil {
+		dob, err = time.Parse("2006-01-02", *updatePersonReq.DOB)
 		if err != nil {
 			c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse dob value from the post message"))
 		}

@@ -79,17 +79,40 @@ func (p Person) Validate() (bool, []string) {
 }
 
 func CreatePerson(p *Person) error {
-	valid, fields := p.Validate()
+	valid, invalidFields := p.Validate()
 
 	if !valid {
-		return fmt.Errorf("Following parameters to the CreatePerson func was not provided: %v", fields)
+		return fmt.Errorf("following parameters to the CreatePerson func was not provided: %v", invalidFields)
 	}
-	_, err := conn.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob, user_id) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob, :user_id)", &p)
+
+	tx, err := conn.Beginx()
 	if err != nil {
 		return err
 	}
 
-	return err
+	// Save the person, returning ID
+	_, err = tx.NamedExec("INSERT into people (first_name, last_name, career, mobile, email, address, dob, user_id) VALUES (:first_name, :last_name, :career, :mobile, :email, :address, :dob, :user_id, :relationship_to_user) returning id", &p)
+	if err != nil {
+		return err
+	}
+
+	// newlyInsertedID, err := result.LastInsertId()
+	// if err != nil {
+	// 	return err
+	// }
+
+	// Save a relationship between the user and the person
+	// _, err = tx.Exec("INSERT into relationships (person_one_id, person_two_id, relationship_type) VALUES ($1, $2, $3)", &p.UserID, &newlyInsertedID, &p.RelationshipToUser)
+	// if err != nil {
+	// 	return err
+	// }
+
+	err = tx.Commit()
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func UpdatePerson(id string, p *models.Person) error {

@@ -7,8 +7,20 @@ const (
 	Friend   RelationshipType = "friend"
 	Partner  RelationshipType = "partner"
 	Coworker RelationshipType = "coworker"
-)
 
+	Colleague    RelationshipType = "colleague"
+	Acquaintance RelationshipType = "acquaintance"
+	Cousin       RelationshipType = "cousin"
+	Family       RelationshipType = "family"
+
+	Rival RelationshipType = "rival"
+	Enemy RelationshipType = "enemy"
+	
+  // Aunt RelationshipType = "aunt"
+	// Uncle RelationshipType = "uncle"
+)
+	 
+	
 type Relationship struct {
 	ID               int              `db:"id" json:"id"`
 	PersonOneID      int              `db:"person_one_id" json:"person_one_id,omitempty"`

@@ -13,3 +13,8 @@ type UserRequest struct {
 	Email    string `db:"email" json:"email"`
 	Password string `db:"password"`
 }
+
+// Data that most pages should have
+type UserData struct {
+	People []*Person
+}
