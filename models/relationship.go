@@ -28,12 +28,14 @@ type Relationship struct {
 }
 
 type RelationshipHydrated struct {
-	ID               int              `db:"id" json:"id"`
-	PersonID         int              `db:"person_id" json:"person_id,omitempty"`
-	RelationshipType RelationshipType `db:"relationship_type" json:"relationship_type"`
-	Person
+	ID               int              `json:"id,omitempty"`
+	PersonID         int              `json:"person_id,omitempty"`
+	RelationshipType RelationshipType `json:"relationship_type"`
+	Person           Person           `json:"person"`
 }
 
-type RelationshipRequest struct {
-	Relationship
+type CreateRelationshipRequest struct {
+	PersonOneID      int              `db:"person_one_id" json:"person_one_id"`
+	PersonTwoID      int              `db:"person_two_id" json:"person_two_id"`
+	RelationshipType RelationshipType `db:"relationship_type" json:"relationship_type"`
 }

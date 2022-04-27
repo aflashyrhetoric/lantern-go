@@ -152,26 +152,12 @@ func UpdatePerson(c *gin.Context) {
 	if updatePersonReq.LastName != "" {
 		person.LastName = updatePersonReq.LastName
 	}
-	// if updatePersonReq.Career != "" {
 	person.Career = updatePersonReq.Career
-	// }
-	// if updatePersonReq.Mobile != "" {
 	person.Mobile = updatePersonReq.Mobile
-	// }
-	// if updatePersonReq.Email != "" {
 	person.Email = updatePersonReq.Email
-	// }
-	// if updatePersonReq.Address != "" {
 	person.Address = updatePersonReq.Address
-	// }
-
 	person.RelationshipToUser = updatePersonReq.RelationshipToUser
 	person.RelationshipToUserThroughPerson = updatePersonReq.RelationshipToUserThroughPerson
-	// fmt.Println(updatePersonReq.RelationshipToUser)
-
-	// if updatePersonReq.RelationshipToUserThroughPerson != nil && updatePersonReq.RelationshipToUser != nil {
-	// 	person.RelationshipToUserThroughPerson = *updatePersonReq.RelationshipToUserThroughPerson
-	// }
 
 	var dob time.Time
 	if updatePersonReq.DOB != nil {
@@ -186,8 +172,6 @@ func UpdatePerson(c *gin.Context) {
 	} else {
 		person.DOB = &dob
 	}
-
-	// spew.Dump(person)
 
 	err = db.UpdatePerson(id, person)
 	if err != nil {

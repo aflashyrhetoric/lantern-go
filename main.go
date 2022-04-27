@@ -140,6 +140,9 @@ func main() {
 	protected.PUT("/people/:id", handlers.UpdatePerson)
 	protected.DELETE("/people/:id", handlers.DeletePerson)
 
+	protected.POST("/relationships", handlers.CreateRelationship)
+	protected.DELETE("/relationships/:id", handlers.DeleteRelationship)
+
 	// Notes
 	protected.POST("/notes/:person_id", handlers.CreateNote)
 	protected.DELETE("/notes/:id", handlers.DeleteNote)

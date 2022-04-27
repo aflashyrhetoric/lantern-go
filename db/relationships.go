@@ -10,7 +10,8 @@ type Relationship struct {
 	*models.Relationship
 }
 
-func GetAllRelationships() ([]*models.Relationship, error) {
+// Do not use except for testing locally
+func DEBUG_GetAllRelationships() ([]*models.Relationship, error) {
 	points := []*models.Relationship{}
 	err := conn.Select(&points, "SELECT * FROM relationships")
 
@@ -55,12 +56,18 @@ func GetRelationshipsForPerson(id string, userID int64) ([]models.RelationshipHy
 			}
 		}
 
-		p := people[0]
 		for _, relationship := range reorientedWithPersonAsPersonOne {
+			var p *models.Person
+			for _, person := range people {
+				if person.ID == relationship.PersonTwoID {
+					p = person
+				}
+			}
 			r := models.RelationshipHydrated{
+				ID:               relationship.ID,
 				PersonID:         relationship.PersonTwoID,
 				RelationshipType: relationship.RelationshipType,
-				Person:           *p, // TODO: FIX, USE A GENERIC FIND METHOD TO FIND THE MATCHING PEOPLE ARRAy
+				Person:           *p,
 			}
 			relationshipsHydrated = append(relationshipsHydrated, r)
 		}
@@ -69,16 +76,6 @@ func GetRelationshipsForPerson(id string, userID int64) ([]models.RelationshipHy
 
 	return relationshipsHydrated, nil
 }
-
-// func GetPressurePointWithID(id string) (*models.PressurePoint, error) {
-// 	point := models.PressurePoint{}
-// 	err := conn.Get(&point, "SELECT * FROM pressure_points WHERE id = $1", id)
-// 	if err != nil {
-// 		return nil, err
-// 	}
-
-// 	return &point, nil
-// }
 
 func (r Relationship) Validate() (bool, []string) {
 	invalidFields := []string{}
@@ -112,16 +109,7 @@ func CreateRelationship(r *Relationship) error {
 	return err
 }
 
-// func UpdatePressurePoint(id string, n *models.PressurePoint) error {
-// 	_, err := conn.NamedExec("UPDATE pressure_points SET description=:description WHERE id=:id", n)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// }
-
-func Deleterelationship(id string) error {
+func DeleteRelationship(id string) error {
 	_, err := conn.Exec("DELETE FROM relationships WHERE id=$1", id)
 	if err != nil {
 		return err

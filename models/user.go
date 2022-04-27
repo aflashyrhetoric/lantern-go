@@ -16,5 +16,5 @@ type UserRequest struct {
 
 // Data that most pages should have
 type UserData struct {
-	People []*Person
+	People []*Person `json:"people"`
 }
