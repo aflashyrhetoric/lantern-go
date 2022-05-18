@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 	"os"
 	"time"
@@ -45,12 +46,12 @@ func LoginUser(c *gin.Context) {
 	dbModel := &models.UserRequest{}
 	err := c.BindJSON(&dbModel)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse the user login request"))
 	}
 
 	user, err := db.GetUserByEmail(dbModel.Email)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not find user by email"))
 	}
 
 	userPW := user.Password
@@ -58,11 +59,14 @@ func LoginUser(c *gin.Context) {
 
 	err = bcrypt.CompareHashAndPassword([]byte(userPW), []byte(reqPW))
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("password does not match"))
 	}
 
 	// Create the token
 	JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
+	if JWT_SIGNING_KEY == "" {
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("JWT_SIGNING_KEY is not set"))
+	}
 	mySigningKey := []byte(JWT_SIGNING_KEY)
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
 	claims := jwt.MapClaims{
@@ -73,7 +77,7 @@ func LoginUser(c *gin.Context) {
 	// Sign and get the complete encoded token as a string
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, err)
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not get the signed string from the token"))
 	}
 
 	ENV := os.Getenv("LANTERN_ENV")
