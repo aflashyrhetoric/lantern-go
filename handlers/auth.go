@@ -20,6 +20,7 @@ func SignupUser(c *gin.Context) {
 	err := c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 
 	now := time.Now()
@@ -35,6 +36,7 @@ func SignupUser(c *gin.Context) {
 	err = db.CreateUser(&user)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, err)
+		return
 	}
 
 	c.JSON(http.StatusCreated, gin.H{
@@ -47,11 +49,13 @@ func LoginUser(c *gin.Context) {
 	err := c.BindJSON(&dbModel)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not parse the user login request"))
+		return
 	}
 
 	user, err := db.GetUserByEmail(dbModel.Email)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not find user by email"))
+		return
 	}
 
 	userPW := user.Password
@@ -60,12 +64,14 @@ func LoginUser(c *gin.Context) {
 	err = bcrypt.CompareHashAndPassword([]byte(userPW), []byte(reqPW))
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("password does not match"))
+		return
 	}
 
 	// Create the token
 	JWT_SIGNING_KEY = os.Getenv("JWT_SIGNING_KEY")
 	if JWT_SIGNING_KEY == "" {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("JWT_SIGNING_KEY is not set"))
+		return
 	}
 	mySigningKey := []byte(JWT_SIGNING_KEY)
 	token := jwt.New(jwt.GetSigningMethod("HS256"))
@@ -78,6 +84,7 @@ func LoginUser(c *gin.Context) {
 	tokenString, err := token.SignedString(mySigningKey)
 	if err != nil {
 		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not get the signed string from the token"))
+		return
 	}
 
 	ENV := os.Getenv("LANTERN_ENV")
