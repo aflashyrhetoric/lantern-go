@@ -54,7 +54,7 @@ func LoginUser(c *gin.Context) {
 
 	user, err := db.GetUserByEmail(dbModel.Email)
 	if err != nil {
-		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not find user by email"))
+		c.AbortWithError(http.StatusInternalServerError, fmt.Errorf("could not find user by email: %v", dbModel.Email))
 		return
 	}
 
